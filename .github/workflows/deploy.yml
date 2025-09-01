@@ -1,0 +1,33 @@
+name: Deploy to Lightsail
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_KEY }}
+
+      - name: Rsync files to server
+        run: |
+          rsync -az --delete \
+            --exclude ".git" --exclude ".github" \
+            ./ deploy@humblewizards.com:/var/www/humble-www/releases/${{ github.sha }}
+
+      - name: Update symlink and reload
+        run: |
+          ssh deploy@humblewizards.com << 'EOF'
+          ln -sfn /var/www/humble-www/releases/${GITHUB_SHA} /var/www/current
+          # Optional: run composer/npm build steps here if needed
+          sudo systemctl reload apache2
+          EOF
+        env:
+          GITHUB_SHA: ${{ github.sha }}
