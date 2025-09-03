@@ -16,18 +16,69 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.DEPLOY_KEY }}
 
+      - name: Add host to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H "${{ vars.SERVER_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Set release ID
+        run: echo "RELEASE=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
+
+      - name: Create release dir on server
+        run: |
+          ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} \
+            "mkdir -p ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/"
+            
       - name: Rsync files to server
         run: |
           rsync -az --delete \
-            --exclude ".git" --exclude ".github" \
-            ./ deploy@humblewizards.com:/var/www/humble-www/releases/${{ github.sha }}
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='var' \
+            -e "ssh" ./ \
+            ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }}:${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/
 
-      - name: Update symlink and reload
+      - name: Verify layout
         run: |
-          ssh deploy@humblewizards.com << 'EOF'
-          ln -sfn /var/www/humble-www/releases/${GITHUB_SHA} /var/www/current
-          # Optional: run composer/npm build steps here if needed
-          sudo systemctl reload apache2
-          EOF
-        env:
-          GITHUB_SHA: ${{ github.sha }}
+          ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
+            echo 'DEPLOY_PATH=${{ vars.DEPLOY_PATH }}'; \
+            echo 'RELEASES_DIR=${{ vars.RELEASES_DIR }}'; \
+            ls -ld ${{ vars.DEPLOY_PATH }} ${{ vars.DEPLOY_PATH }}/current || true; \
+            ls -ld ${{ vars.RELEASES_DIR }} || true; \
+            readlink -f ${{ vars.DEPLOY_PATH }}/current || true
+          "
+    
+      - name: Link shared files/dirs
+        run: |
+          ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
+            mkdir -p ${{ vars.DEPLOY_PATH }}/code/shared/var && \
+            ln -sfn ${{ vars.DEPLOY_PATH }}/code/shared/var ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code/var && \
+            if [ -f ${{ vars.DEPLOY_PATH }}/.env.local ]; then
+              ln -sfn ${{ vars.DEPLOY_PATH }}/.env.local ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code/.env.local
+            fi
+          "
+          
+      - name: Compose on server
+        run: |
+          ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
+            cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }} && \
+            php -v && composer -V || true
+          "
+          ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
+            cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code && \
+            (command -v composer >/dev/null 2>&1 && composer install --no-dev --optimize-autoloader) || \
+            php composer.phar install --no-dev --optimize-autoloader
+          "
+
+      - name: Warm cache (prod)
+        run: |
+          ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
+            cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code && \
+            php bin/console cache:clear && \
+            php bin/console cache:warmup
+          "
+      
+      - name: Activate release and reload
+        run: |
+          ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} \
+            "ln -sfn ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code ${{ vars.DEPLOY_PATH }}/current && sudo systemctl reload apache2"
