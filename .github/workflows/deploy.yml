@@ -35,7 +35,6 @@ jobs:
             --exclude='.git' \
             --exclude='.github' \
             --exclude='var' \
-            --exclude='.env*' \
             -e "ssh" ./ \
             ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }}:${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/
 
