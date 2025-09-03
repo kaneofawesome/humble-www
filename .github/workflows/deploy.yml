@@ -21,12 +21,14 @@ jobs:
           mkdir -p ~/.ssh
           ssh-keyscan -H "${{ vars.SERVER_HOST }}" >> ~/.ssh/known_hosts
 
-      - name: Create release
-        run: |
-          REL=$(date +%Y%m%d%H%M%S) \
-          echo "RELEASE=$REL" >> $GITHUB_ENV \
-          ssh ${{ vars.SERVER_USER }}@{{ vars.SERVER_HOST }} "mkdir -p ${{ vars.DEPLOY_PATH }}/releases/${{ env.RELEASE }}/"
+      - name: Set release ID
+        run: echo "RELEASE=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
 
+      - name: Create release dir on server
+        run: |
+          ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} \
+            "mkdir -p ${{ vars.DEPLOY_PATH }}/releases/${{ env.RELEASE }}/"
+            
       - name: Rsync files to server
         run: |
           rsync -az --delete \
@@ -39,7 +41,5 @@ jobs:
 
       - name: Update symlink and reload
         run: |
-          ssh ${{ vars.SERVER_USER }}@{{ vars.SERVER_HOST }} << "
-            ln -sfn ${{ vars.DEPLOY_PATH }}/releases/${{ env.RELEASE }} /var/www/current && \
-            sudo systemctl reload apache2
-          "
+          ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} \
+            "ln -sfn ${{ vars.DEPLOY_PATH }}/releases/${{ env.RELEASE }} ${{ vars.DEPLOY_PATH }}/current && sudo systemctl reload apache2"
