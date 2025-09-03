@@ -27,7 +27,7 @@ jobs:
       - name: Create release dir on server
         run: |
           ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} \
-            "mkdir -p ${{ vars.DEPLOY_PATH }}/releases/${{ env.RELEASE }}/"
+            "mkdir -p ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/"
             
       - name: Rsync files to server
         run: |
@@ -37,9 +37,9 @@ jobs:
             --exclude='var' \
             --exclude='.env*' \
             -e "ssh" ./ \
-            ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }}:${{ vars.DEPLOY_PATH }}/releases/${{ env.RELEASE }}/
+            ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }}:${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/
 
       - name: Update symlink and reload
         run: |
           ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} \
-            "ln -sfn ${{ vars.DEPLOY_PATH }}/releases/${{ env.RELEASE }} ${{ vars.DEPLOY_PATH }}/current && sudo systemctl reload apache2"
+            "ln -sfn ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }} ${{ vars.DEPLOY_PATH }}/current && sudo systemctl reload apache2"
