@@ -23,8 +23,8 @@ jobs:
 
       - name: Create release
         run: |
-          REL=$(date +%Y%m%d%H%M%S)
-          echo "RELEASE=$REL" >> $GITHUB_ENV
+          REL=$(date +%Y%m%d%H%M%S) \
+          echo "RELEASE=$REL" >> $GITHUB_ENV \
           ssh ${{ vars.SERVER_USER }}@{{ vars.SERVER_HOST }} "mkdir -p ${{ vars.DEPLOY_PATH }}/releases/$REL
 
       - name: Rsync files to server
