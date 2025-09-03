@@ -39,18 +39,6 @@ jobs:
             -e "ssh" ./ \
             ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }}:${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/
 
-      - name: Compose on server
-        run: |
-          ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
-            cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }} && \
-            php -v && composer -V || true
-          "
-          ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
-            cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code && \
-            (command -v composer >/dev/null 2>&1 && composer install --no-dev --optimize-autoloader) || \
-            php composer.phar install --no-dev --optimize-autoloader
-          "
-
       - name: Link shared files/dirs and warm cache
         run: |
           ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
@@ -62,6 +50,18 @@ jobs:
             cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code && \
             php bin/console cache:clear --env=prod && \
             php bin/console cache:warmup --env=prod
+          "
+          
+      - name: Compose on server
+        run: |
+          ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
+            cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }} && \
+            php -v && composer -V || true
+          "
+          ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
+            cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code && \
+            (command -v composer >/dev/null 2>&1 && composer install --no-dev --optimize-autoloader) || \
+            php composer.phar install --no-dev --optimize-autoloader
           "
           
       - name: Activate release and reload
