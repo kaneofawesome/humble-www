@@ -39,7 +39,32 @@ jobs:
             -e "ssh" ./ \
             ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }}:${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/
 
-      - name: Update symlink and reload
+      - name: Compose on server
+        run: |
+          ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
+            cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }} && \
+            php -v && composer -V || true
+          "
+          ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
+            cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }} && \
+            (command -v composer >/dev/null 2>&1 && composer install --no-dev --optimize-autoloader) || \
+            php composer.phar install --no-dev --optimize-autoloader
+          "
+
+      - name: Link shared files/dirs and warm cache
+        run: |
+          ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
+            mkdir -p ${{ vars.APP_PATH }}/shared/var && \
+            ln -sfn ${{ vars.APP_PATH }}/shared/var ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/var && \
+            if [ -f ${{ vars.DEPLOY_PATH }}/.env.local ]; then
+              ln -sfn ${{ vars.DEPLOY_PATH }}/.env.local ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/.env.local
+            fi && \
+            cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }} && \
+            php bin/console cache:clear --env=prod && \
+            php bin/console cache:warmup --env=prod
+          "
+          
+      - name: Activate release and reload
         run: |
           ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} \
             "ln -sfn ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }} ${{ vars.DEPLOY_PATH }}/current && sudo systemctl reload apache2"
