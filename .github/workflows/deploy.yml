@@ -39,17 +39,14 @@ jobs:
             -e "ssh" ./ \
             ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }}:${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/
 
-      - name: Link shared files/dirs and warm cache
+      - name: Link shared files/dirs
         run: |
           ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
             mkdir -p ${{ vars.APP_PATH }}/code/shared/var && \
             ln -sfn ${{ vars.APP_PATH }}/code/shared/var ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code/var && \
             if [ -f ${{ vars.DEPLOY_PATH }}/.env.local ]; then
               ln -sfn ${{ vars.DEPLOY_PATH }}/.env.local ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code/.env.local
-            fi && \
-            cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code && \
-            php bin/console cache:clear --env=prod && \
-            php bin/console cache:warmup --env=prod
+            fi
           "
           
       - name: Compose on server
@@ -61,7 +58,10 @@ jobs:
           ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
             cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code && \
             (command -v composer >/dev/null 2>&1 && composer install --no-dev --optimize-autoloader) || \
-            php composer.phar install --no-dev --optimize-autoloader
+            php composer.phar install --no-dev --optimize-autoloader\
+            cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code && \
+            php bin/console cache:clear --env=prod && \
+            php bin/console cache:warmup --env=prod
           "
           
       - name: Activate release and reload
