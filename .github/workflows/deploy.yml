@@ -39,13 +39,23 @@ jobs:
             -e "ssh" ./ \
             ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }}:${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/
 
+      - name: Verify layout
+        run: |
+          ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
+            echo 'DEPLOY_PATH=${{ vars.DEPLOY_PATH }}'; \
+            echo 'RELEASES_DIR=${{ vars.RELEASES_DIR }}'; \
+            ls -ld ${{ vars.DEPLOY_PATH }} ${{ vars.DEPLOY_PATH }}/current || true; \
+            ls -ld ${{ vars.RELEASES_DIR }} || true; \
+            readlink -f ${{ vars.DEPLOY_PATH }}/current || true
+          "
+    
       - name: Link shared files/dirs
         run: |
           ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
-            mkdir -p ${{ vars.APP_PATH }}/code/shared/var && \
-            ln -sfn ${{ vars.APP_PATH }}/code/shared/var ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code/var && \
-            if [ -f ${{ vars.APP_PATH }}/.env.local ]; then
-              ln -sfn ${{ vars.APP_PATH }}/.env.local ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code/.env.local
+            mkdir -p ${{ vars.DEPLOY_PATH }}/code/shared/var && \
+            ln -sfn ${{ vars.DEPLOY_PATH }}/code/shared/var ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code/var && \
+            if [ -f ${{ vars.DEPLOY_PATH }}/.env.local ]; then
+              ln -sfn ${{ vars.DEPLOY_PATH }}/.env.local ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code/.env.local
             fi
           "
           
@@ -57,13 +67,18 @@ jobs:
           "
           ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
             cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code && \
-            (command -v composer >/dev/null 2>&1 && composer install --no-dev --optimize-autoloader) || \
-            php composer.phar install --no-dev --optimize-autoloader\
-            cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code && \
-            php bin/console cache:clear --env=prod && \
-            php bin/console cache:warmup --env=prod
+            (command -v composer >/dev/null 2>&1 && APP_ENV=prod APP_DEBUG=0 composer install --no-dev --optimize-autoloader) || \
+            APP_ENV=prod APP_DEBUG=0 php composer.phar install --no-dev --optimize-autoloader
           "
-          
+
+      - name: Warm cache (prod)
+        run: |
+          ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
+            cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code && \
+            APP_ENV=prod APP_DEBUG=0 php bin/console cache:clear && \
+            APP_ENV=prod APP_DEBUG=0 php bin/console cache:warmup
+          "
+      
       - name: Activate release and reload
         run: |
           ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} \
