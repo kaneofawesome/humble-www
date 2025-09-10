@@ -74,8 +74,8 @@ jobs:
         run: |
           ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
             cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code && \
-            php bin/console cache:clear && \
-            php bin/console cache:warmup
+            php bin/console cache:clear --env=prod && \
+            php bin/console cache:warmup --env=prod
           "
       
       - name: Activate release and reload
