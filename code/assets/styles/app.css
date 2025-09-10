@@ -1,3 +1,85 @@
+/* Fonts Manrope and Nunito are both available under the SIL Open Font License (OFL) */
+/* See /assets/fonts/
+
+/* Font imports */
+@font-face {
+    font-family: 'Manrope';
+    src: url('/fonts/Manrope-VariableFont_wght.ttf') format('truetype');
+    font-weight: 200 800;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Manrope';
+    src: url('/fonts/Manrope-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Manrope';
+    src: url('/fonts/Manrope-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Manrope';
+    src: url('/fonts/Manrope-SemiBold.ttf') format('truetype');
+    font-weight: 600;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Manrope';
+    src: url('/fonts/Manrope-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Nunito';
+    src: url('/fonts/Nunito-VariableFont_wght.ttf') format('truetype');
+    font-weight: 200 1000;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Nunito';
+    src: url('/fonts/Nunito-Italic-VariableFont_wght.ttf') format('truetype');
+    font-weight: 200 1000;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Nunito';
+    src: url('/fonts/Nunito-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Nunito';
+    src: url('/fonts/Nunito-SemiBold.ttf') format('truetype');
+    font-weight: 600;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Nunito';
+    src: url('/fonts/Nunito-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Nunito';
+    src: url('/fonts/Nunito-ExtraBold.ttf') format('truetype');
+    font-weight: 800;
+    font-display: swap;
+}
+
 /* Reset and base styles */
 * {
     margin: 0;
@@ -24,7 +106,8 @@
     --card-bg: #ffffff;
     --placeholder-bg: linear-gradient(135deg, rgba(177, 128, 240, 0.1) 0%, rgba(55, 181, 182, 0.1) 100%);
     
-    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-family-body: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-family-heading: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     --font-size-base: 16px;
     --line-height-base: 1.6;
     
@@ -73,7 +156,7 @@ html {
 }
 
 body {
-    font-family: var(--font-family);
+    font-family: var(--font-family-body);
     font-size: var(--font-size-base);
     line-height: var(--line-height-base);
     color: var(--text-primary);
@@ -81,6 +164,17 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     transition: background-color var(--transition-normal), color var(--transition-normal);
+}
+
+/* Typography - Nunito for headings and emphasis */
+h1, h2, h3, h4, h5, h6,
+.hero-title,
+.section-title,
+.feature-title,
+.cta-title,
+.brand-logo,
+strong, b, em, i {
+    font-family: var(--font-family-heading);
 }
 
 /* Navigation */
@@ -223,11 +317,28 @@ body {
     padding: 0 var(--spacing-md);
 }
 
+.hero-logo {
+    width: 100%;
+    margin-bottom: var(--spacing-xl);
+    text-align: center;
+}
+
+.hero-logo-img {
+    max-width: 100%;
+    height: auto;
+    max-height: 300px;
+    object-fit: contain;
+}
+
 .hero-content {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--spacing-3xl);
+    display: flex;
+    justify-content: center;
     align-items: center;
+}
+
+.hero-text {
+    text-align: center;
+    max-width: 800px;
 }
 
 .hero-title {
@@ -268,49 +379,6 @@ body {
     flex-wrap: wrap;
 }
 
-/* Image frame */
-.image-frame {
-    position: relative;
-    width: 100%;
-    height: 400px;
-    border-radius: var(--border-radius-xl);
-    overflow: hidden;
-    box-shadow: var(--shadow-xl);
-    background: var(--bg-secondary);
-    border: 2px solid var(--border-color);
-}
-
-.hero-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: var(--transition-slow);
-}
-
-.image-placeholder {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: var(--placeholder-bg);
-    color: var(--text-secondary);
-}
-
-.placeholder-icon {
-    color: var(--color-primary);
-    margin-bottom: var(--spacing-sm);
-    opacity: 0.7;
-}
-
-.placeholder-text {
-    font-size: 1rem;
-    font-weight: 500;
-}
 
 /* Buttons */
 .btn {
@@ -320,6 +388,7 @@ body {
     padding: var(--spacing-sm) var(--spacing-lg);
     border-radius: var(--border-radius-md);
     text-decoration: none;
+    font-family: var(--font-family-heading);
     font-weight: 600;
     font-size: 1rem;
     transition: var(--transition-fast);
@@ -525,12 +594,6 @@ body {
         align-self: center;
     }
     
-    .hero-content {
-        grid-template-columns: 1fr;
-        gap: var(--spacing-xl);
-        text-align: center;
-    }
-    
     .hero-actions {
         justify-content: center;
     }
@@ -540,8 +603,8 @@ body {
         gap: var(--spacing-lg);
     }
     
-    .image-frame {
-        height: 300px;
+    .hero-logo-img {
+        max-height: 200px;
     }
 }
 
@@ -569,5 +632,9 @@ body {
     
     .btn {
         width: 100%;
+    }
+    
+    .hero-logo-img {
+        max-height: 150px;
     }
 }

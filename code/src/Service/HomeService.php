@@ -17,7 +17,7 @@ final class HomeService
 
         return [
             'title' => 'Welcome to Humble',
-            'heroImageUrl' => '/images/hero-placeholder.jpg',
+            'heroImageUrl' => '/images/humble-wizards-logo.png',
             'brandColors' => [
                 'primary' => '#B180F0',
                 'secondary' => '#37B5B6', 
