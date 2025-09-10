@@ -1,0 +1,96 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ pageTitle }}{% endblock %}
+
+{% block description %}Learn about our culture, team, and the story behind Humble - where high standards meet humility and customer obsession drives everything we do.{% endblock %}
+
+{% block body %}
+    {# Culture Section #}
+    <section class="about-section culture-section" id="culture">
+        <div class="about-container">
+            <div class="section-content">
+                <h1 class="section-title">Our Culture</h1>
+                <p class="section-subtitle">The values that guide everything we do</p>
+                
+                <div class="culture-grid">
+                    {% for value in cultureValues %}
+                        <div class="culture-card">
+                            <h3 class="culture-title">{{ value.title }}</h3>
+                            <p class="culture-description">{{ value.description }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {# Who We Are Section #}
+    <section class="about-section team-section" id="team">
+        <div class="about-container">
+            <div class="section-content">
+                <h2 class="section-title">Who We Are</h2>
+                <div class="team-content">
+                    <div class="team-photo-placeholder">
+                        <div class="photo-frame">
+                            <div class="photo-placeholder">
+                                <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+                                    <circle cx="40" cy="25" r="12" stroke="currentColor" stroke-width="2"/>
+                                    <path d="M20 60c0-11 9-20 20-20s20 9 20 20" stroke="currentColor" stroke-width="2" fill="none"/>
+                                </svg>
+                                <p class="placeholder-text">Your photo will appear here</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="team-bio">
+                        <div class="bio-placeholder">
+                            <h3 class="bio-title">Your Name</h3>
+                            <p class="bio-role">Founder & CEO</p>
+                            <div class="bio-content">
+                                <p>Your biography will be added here. This section will showcase your background, experience, and what drives your passion for creating exceptional solutions.</p>
+                                
+                                <p>Share your journey, expertise, and vision for the company. This personal touch helps visitors connect with the human side of your business.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {# Company History Section #}
+    <section class="about-section history-section" id="history">
+        <div class="about-container">
+            <div class="section-content">
+                <h2 class="section-title">Our Story</h2>
+                <div class="history-content">
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <h4 class="timeline-title">The Beginning</h4>
+                                <p class="timeline-description">Founded with a vision to create exceptional digital experiences that put customers first. Our journey began with a simple belief: technology should serve people, not the other way around.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <h4 class="timeline-title">Growing Our Values</h4>
+                                <p class="timeline-description">As we evolved, our core values emerged naturally from our work and relationships. High Bar, Low Ego, Kind Candor, and Customer-Obsessed became more than just words—they became our foundation.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <h4 class="timeline-title">Today & Tomorrow</h4>
+                                <p class="timeline-description">We continue to push boundaries while staying true to our humble roots. Every project is an opportunity to learn, grow, and create something meaningful for our customers.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
