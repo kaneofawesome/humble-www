@@ -67,7 +67,7 @@ jobs:
           "
           ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
             set -e
-            export APP_ENV=prod APP_SECRET='${{ secrets.APP_SECRET }}'
+            export APP_ENV=prod APP_SECRET='${{ secrets.HUMBLE_SECRET }}'
             cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code &&
             (command -v composer >/dev/null 2>&1 && composer install --no-dev --optimize-autoloader --no-interaction --no-progress) || \
             php composer.phar install --no-dev --optimize-autoloader --no-interaction --no-progress
