@@ -66,9 +66,12 @@ jobs:
             php -v && composer -V || true
           "
           ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
-            cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code && \
-            (command -v composer >/dev/null 2>&1 && composer install --no-dev --optimize-autoloader) || \
-            php composer.phar install --no-dev --optimize-autoloader
+            set -e
+            export APP_ENV=prod APP_SECRET='${{ secrets.APP_SECRET }}'
+            cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code &&
+            (command -v composer >/dev/null 2>&1 && composer install --no-dev --optimize-autoloader --no-interaction --no-progress) || \
+            php composer.phar install --no-dev --optimize-autoloader --no-interaction --no-progress
+            composer dump-env prod
           "
 
       - name: Warm cache (prod)
@@ -81,9 +84,5 @@ jobs:
       
       - name: Activate release and reload
         run: |
-          ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
-            cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code && \
-            (command -v composer dump-env prod)
-          "
           ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} \
             "ln -sfn ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code ${{ vars.DEPLOY_PATH }}/current && sudo systemctl reload apache2"
