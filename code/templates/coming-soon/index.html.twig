@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ pageTitle }}{% endblock %}
+
+{% block description %}This feature is coming soon! Stay tuned for exciting updates from Humble.{% endblock %}
+
+{% block body %}
+    <section class="coming-soon-fullpage">
+        {# Light theme picture element #}
+        <picture class="coming-soon-bg light-theme-bg">
+            <source srcset="{{ asset('images/wizard-coming-soon-light-1920x1080.webp') }}" 
+                    media="(min-width: 1280px)">
+            <source srcset="{{ asset('images/wizard-coming-soon-light-1280x720.webp') }}" 
+                    media="(min-width: 960px)">
+            <source srcset="{{ asset('images/wizard-coming-soon-light-960x540.webp') }}" 
+                    media="(min-width: 640px)">
+            <img src="{{ asset('images/wizard-coming-soon-light-640x360.webp') }}" 
+                 alt="A wizard conjuring a study - light theme" 
+                 class="coming-soon-image">
+        </picture>
+        
+        {# Dark theme picture element #}
+        <picture class="coming-soon-bg dark-theme-bg">
+            <source srcset="{{ asset('images/wizard-coming-soon-dark-1920x1080.webp') }}" 
+                    media="(min-width: 1280px)">
+            <source srcset="{{ asset('images/wizard-coming-soon-dark-1280x720.webp') }}" 
+                    media="(min-width: 960px)">
+            <source srcset="{{ asset('images/wizard-coming-soon-dark-960x540.webp') }}" 
+                    media="(min-width: 640px)">
+            <img src="{{ asset('images/wizard-coming-soon-dark-640x360.webp') }}" 
+                 alt="A wizard conjuring a study - dark theme" 
+                 class="coming-soon-image">
+        </picture>
+        
+        <div class="coming-soon-overlay">
+            <div class="coming-soon-content">
+                <h1 class="coming-soon-title">Coming Soon</h1>
+                <p class="coming-soon-subtitle">We're working on something magical!</p>
+                <p class="coming-soon-description">This feature is currently under development. Check back soon for exciting updates and new capabilities.</p>
+                
+                <div class="coming-soon-actions">
+                    <a href="{{ path('home') }}" class="btn btn-primary">Back to Home</a>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
