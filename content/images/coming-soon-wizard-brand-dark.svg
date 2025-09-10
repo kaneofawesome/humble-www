@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Coming soon — a humble wizard conjures a study</title>
+  <desc id="desc">Minimal line illustration styled with brand colors.</desc>
+
+  <defs>
+    <style><![CDATA[
+      :root {
+        --ink: #F8F8F8;
+        --muted: #B180F0;
+        --accent: #37B5B6;
+        --accent2: #B180F0;
+        --bg: #222222;
+      }
+      text { font-family: Inter, system-ui, sans-serif; }
+      .ink { stroke: var(--ink); }
+      .muted { stroke: var(--muted); }
+      .accent { stroke: var(--accent); }
+      .accent2 { stroke: var(--accent2); }
+      .thin { stroke-width: 2; }
+      .med { stroke-width: 3; }
+      .thick { stroke-width: 4; }
+      .round { stroke-linecap: round; stroke-linejoin: round; }
+      .no-fill { fill: none; }
+      .soft { opacity: 0.5; }
+      .dash { stroke-dasharray: 6 6; }
+    ]]></style>
+
+    <g id="sparkle" class="accent thin round no-fill">
+      <path d="M0,-8 L2,-2 L8,0 L2,2 L0,8 L-2,2 L-8,0 L-2,-2 Z"/>
+    </g>
+    <g id="book" class="ink thin round">
+      <path class="no-fill" d="M0,0 L60,-10 L60,35 L0,45 Z"/>
+      <path class="no-fill" d="M30,-5 L30,40"/>
+    </g>
+  </defs>
+
+  <rect width="1600" height="900" fill="var(--bg)"/>
+
+  <text x="800" y="140" text-anchor="middle" style="font-weight:700; font-size:64px; fill: var(--ink);">Coming Soon</text>
+  <text x="800" y="195" text-anchor="middle" style="font-weight:400; font-size:22px; fill: var(--muted);">
+    Our humble wizard is conjuring your study.
+  </text>
+
+  <path d="M140 700 H1460" class="muted thin round no-fill"/>
+
+  <g id="wizard">
+    <ellipse cx="420" cy="400" rx="78" ry="10" class="ink thin no-fill"/>
+    <path d="M420,312 L365,400 L475,400 Z" class="ink thin round no-fill"/>
+    <circle cx="420" cy="430" r="24" class="ink thin no-fill"/>
+    <path d="M404,445 C410,470 420,490 420,490 C420,490 430,470 436,445" class="ink thin round no-fill"/>
+    <path d="M420,490 L355,660 Q420,680 485,660 Z" class="ink med round no-fill"/>
+    <path d="M460,520 Q500,520 518,506" class="ink thin round no-fill"/>
+    <path d="M540,330 L540,680" class="ink med round no-fill"/>
+    <circle cx="540" cy="330" r="10" class="accent2 med no-fill"/>
+    <path d="M540,330 C700,260 880,300 1050,360" class="accent med round no-fill"/>
+    <use href="#sparkle" transform="translate(600,320)"/>
+    <use href="#sparkle" transform="translate(720,300)"/>
+    <use href="#sparkle" transform="translate(860,330)"/>
+    <use href="#sparkle" transform="translate(990,350)"/>
+  </g>
+
+  <g id="study">
+    <path d="M860,620 H1260" class="ink thick round no-fill"/>
+    <path d="M890,620 V700 M1230,620 V700" class="ink med round no-fill"/>
+    <path d="M1010,640 h110" class="muted thin round no-fill"/>
+    <circle cx="1050" cy="640" r="2.5" class="muted"/>
+    <circle cx="1080" cy="640" r="2.5" class="muted"/>
+    <rect x="1050" y="360" width="340" height="220" class="ink med round no-fill"/>
+    <path d="M1050,430 H1390 M1050,500 H1390" class="ink thin round no-fill"/>
+    <path d="M980,360 L1040,360 M980,580 L1040,580" class="muted thin dash round no-fill"/>
+    <path d="M1390,330 L1390,360 M1390,580 L1390,610" class="muted thin dash round no-fill"/>
+    <path d="M1060,320 H1380" class="accent thin round no-fill"/>
+    <path d="M1080,300 H1360" class="accent2 thin round no-fill"/>
+    <use href="#book" transform="translate(940,420) rotate(-12)"/>
+    <use href="#book" transform="translate(1220,290) rotate(8) scale(0.9)"/>
+  </g>
+
+  <circle cx="420" cy="560" r="160" class="muted thin no-fill soft"/>
+  <circle cx="1220" cy="480" r="200" class="muted thin no-fill soft"/>
+
+  <text x="800" y="760" text-anchor="middle" style="font-weight:400; font-size:16px; fill: var(--muted);">
+    Crafting something thoughtful. Please check back soon.
+  </text>
+</svg>

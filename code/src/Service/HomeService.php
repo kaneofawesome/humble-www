@@ -33,10 +33,10 @@ final class HomeService
     {
         return [
             ['label' => 'Home', 'route' => 'home', 'active' => true],
-            ['label' => 'About', 'route' => '#', 'active' => false],
-            ['label' => 'Services', 'route' => '#', 'active' => false],
-            ['label' => 'Portfolio', 'route' => '#', 'active' => false],
-            ['label' => 'Contact', 'route' => '#', 'active' => false],
+            ['label' => 'About', 'route' => 'coming_soon', 'active' => false],
+            ['label' => 'Services', 'route' => 'coming_soon', 'active' => false],
+            ['label' => 'Portfolio', 'route' => 'coming_soon', 'active' => false],
+            ['label' => 'Contact', 'route' => 'coming_soon', 'active' => false],
         ];
     }
 }
