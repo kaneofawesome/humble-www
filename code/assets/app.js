@@ -10,10 +10,25 @@ import './styles/app.css';
 // Theme switching functionality
 function initTheme() {
     const themeToggle = document.getElementById('theme-toggle');
-    const savedTheme = localStorage.getItem('theme') || 'light';
     
-    // Apply saved theme
+    // Get system preference
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const systemTheme = prefersDark ? 'dark' : 'light';
+    
+    // Use saved theme or fall back to system preference
+    const savedTheme = localStorage.getItem('theme') || systemTheme;
+    
+    // Apply theme
     document.documentElement.setAttribute('data-theme', savedTheme);
+    
+    // Listen for system theme changes
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+        // Only update if user hasn't manually set a preference
+        if (!localStorage.getItem('theme')) {
+            const newSystemTheme = e.matches ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newSystemTheme);
+        }
+    });
     
     if (themeToggle) {
         themeToggle.addEventListener('click', function() {
