@@ -7,6 +7,8 @@ This file governs non-code content in this repository, including (but not limite
 website copy, blog posts, marketing text, screenshots, photos, illustrations, videos,
 and other media located in: /translations, /content, /public/images, /public/media,
 /assets/images, and any Markdown/HTML files primarily containing prose.
+This file does not govern the license of fonts used on the site, which are 
+according to the OFL.
 
 Such content is NOT open source. You may not copy, modify, or redistribute it
 without explicit written permission, unless an individual file or folder explicitly
