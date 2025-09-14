@@ -83,12 +83,13 @@ jobs:
             composer update
           "
 
-      - name: Warm cache (prod)
+      - name: Warm cache and compile assets (prod)
         run: |
           ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
             cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code && \
             APP_ENV=prod APP_DEBUG=0 php bin/console cache:clear && \
-            APP_ENV=prod APP_DEBUG=0 php bin/console cache:warmup
+            APP_ENV=prod APP_DEBUG=0 php bin/console cache:warmup && \
+            APP_ENV=prod APP_DEBUG=0 php bin/console asset-map:compile
           "
 
       - name: Give www-data the cache
