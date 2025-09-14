@@ -4,49 +4,49 @@
 /* Font imports */
 @font-face {
     font-family: 'Manrope';
-    src: url('../fonts/Manrope-VariableFont_wght.ttf') format('truetype');
+    src: url('/fonts/Manrope-VariableFont_wght.ttf') format('truetype');
     font-weight: 200 800;
     font-display: swap;
 }
 
 @font-face {
     font-family: 'Manrope';
-    src: url('../fonts/Manrope-Regular.ttf') format('truetype');
+    src: url('/fonts/Manrope-Regular.ttf') format('truetype');
     font-weight: 400;
     font-display: swap;
 }
 
 @font-face {
     font-family: 'Manrope';
-    src: url('../fonts/Manrope-Medium.ttf') format('truetype');
+    src: url('/fonts/Manrope-Medium.ttf') format('truetype');
     font-weight: 500;
     font-display: swap;
 }
 
 @font-face {
     font-family: 'Manrope';
-    src: url('../fonts/Manrope-SemiBold.ttf') format('truetype');
+    src: url('/fonts/Manrope-SemiBold.ttf') format('truetype');
     font-weight: 600;
     font-display: swap;
 }
 
 @font-face {
     font-family: 'Manrope';
-    src: url('../fonts/Manrope-Bold.ttf') format('truetype');
+    src: url('/fonts/Manrope-Bold.ttf') format('truetype');
     font-weight: 700;
     font-display: swap;
 }
 
 @font-face {
     font-family: 'Nunito';
-    src: url('../fonts/Nunito-VariableFont_wght.ttf') format('truetype');
+    src: url('/fonts/Nunito-VariableFont_wght.ttf') format('truetype');
     font-weight: 200 1000;
     font-display: swap;
 }
 
 @font-face {
     font-family: 'Nunito';
-    src: url('../fonts/Nunito-Italic-VariableFont_wght.ttf') format('truetype');
+    src: url('/fonts/Nunito-Italic-VariableFont_wght.ttf') format('truetype');
     font-weight: 200 1000;
     font-style: italic;
     font-display: swap;
@@ -54,28 +54,28 @@
 
 @font-face {
     font-family: 'Nunito';
-    src: url('../fonts/Nunito-Regular.ttf') format('truetype');
+    src: url('/fonts/Nunito-Regular.ttf') format('truetype');
     font-weight: 400;
     font-display: swap;
 }
 
 @font-face {
     font-family: 'Nunito';
-    src: url('../fonts/Nunito-SemiBold.ttf') format('truetype');
+    src: url('/fonts/Nunito-SemiBold.ttf') format('truetype');
     font-weight: 600;
     font-display: swap;
 }
 
 @font-face {
     font-family: 'Nunito';
-    src: url('../fonts/Nunito-Bold.ttf') format('truetype');
+    src: url('/fonts/Nunito-Bold.ttf') format('truetype');
     font-weight: 700;
     font-display: swap;
 }
 
 @font-face {
     font-family: 'Nunito';
-    src: url('../fonts/Nunito-ExtraBold.ttf') format('truetype');
+    src: url('/fonts/Nunito-ExtraBold.ttf') format('truetype');
     font-weight: 800;
     font-display: swap;
 }
@@ -423,6 +423,7 @@ strong, b, em, i {
 .btn-primary:hover {
     background: var(--color-secondary);
     border-color: var(--color-secondary);
+    color: var(--color-dark);
     transform: translateY(-2px);
     box-shadow: var(--shadow-lg);
 }
@@ -557,6 +558,7 @@ strong, b, em, i {
 .cta-section .btn-primary:hover {
     background: var(--color-accent);
     border-color: var(--color-accent);
+    color: var(--color-dark);
 }
 
 /* Footer */
@@ -771,6 +773,7 @@ strong, b, em, i {
 .coming-soon-actions .btn:hover {
     background: rgba(55, 181, 182, 0.9);
     border-color: rgba(55, 181, 182, 0.9);
+    color: var(--color-dark);
     box-shadow: 0 6px 20px rgba(55, 181, 182, 0.4);
     transform: translateY(-3px);
 }
@@ -805,6 +808,106 @@ strong, b, em, i {
     min-height: 100vh;
     display: flex;
     align-items: center;
+}
+
+.services-intro-section {
+    min-height: 60vh;
+}
+
+/* Services Page Styles */
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: var(--spacing-2xl);
+    margin-top: var(--spacing-2xl);
+}
+
+.service-card {
+    background: var(--card-bg);
+    padding: var(--spacing-2xl);
+    border-radius: var(--border-radius-xl);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border-color);
+    transition: var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+}
+
+.service-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+}
+
+.service-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-xl);
+}
+
+.service-header {
+    margin-bottom: var(--spacing-xl);
+}
+
+.service-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: var(--spacing-md);
+    line-height: 1.3;
+}
+
+.service-description {
+    color: var(--text-secondary);
+    line-height: 1.7;
+    font-size: 1.1rem;
+}
+
+.service-features {
+    margin-bottom: var(--spacing-xl);
+}
+
+.features-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-md);
+}
+
+.features-list {
+    list-style: none;
+    padding: 0;
+}
+
+.feature-item {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: var(--spacing-sm);
+    padding-left: var(--spacing-md);
+    position: relative;
+}
+
+.feature-item::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: var(--color-secondary);
+    font-weight: bold;
+}
+
+.service-cta {
+    text-align: center;
+}
+
+.cta-actions {
+    display: flex;
+    gap: var(--spacing-md);
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: var(--spacing-xl);
 }
 
 .about-container {
@@ -1041,6 +1144,11 @@ strong, b, em, i {
         gap: var(--spacing-lg);
     }
     
+    .services-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-xl);
+    }
+    
     .team-content {
         grid-template-columns: 1fr;
         gap: var(--spacing-2xl);
@@ -1090,6 +1198,30 @@ strong, b, em, i {
 @media (max-width: 480px) {
     .about-container {
         padding: 0 var(--spacing-sm);
+    }
+    
+    .services-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-lg);
+    }
+    
+    .service-card {
+        padding: var(--spacing-xl);
+    }
+    
+    .service-title {
+        font-size: 1.5rem;
+    }
+    
+    .cta-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .cta-actions .btn {
+        width: 100%;
+        max-width: 300px;
+        margin: 0 auto;
     }
     
     .photo-frame {
