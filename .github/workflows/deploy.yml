@@ -90,16 +90,16 @@ jobs:
             APP_ENV=prod APP_DEBUG=0 php bin/console cache:clear && \
             APP_ENV=prod APP_DEBUG=0 php bin/console cache:warmup
           "
-      
-      - name: Activate release and reload
-        run: |
-          ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} \
-            "ln -sfn ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code ${{ vars.DEPLOY_PATH }}/current && sudo systemctl reload apache2"
 
       - name: Give www-data the cache
         run: |
           ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
-            cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }} && \
-            chown -R ${{ vars.SERVER_USER }}:www-data code
+            cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code/var/cache && \
+            chown -R ${{ vars.SERVER_USER }}:www-data prod
           "
           
+      - name: Activate release and reload
+        run: |
+          ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} \
+            "ln -sfn ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code ${{ vars.DEPLOY_PATH }}/current && sudo systemctl reload apache2"
+            
