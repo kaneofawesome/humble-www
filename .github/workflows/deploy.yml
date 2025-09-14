@@ -55,7 +55,7 @@ jobs:
             ln -sfn ${{ vars.DEPLOY_PATH }}/code/shared/var ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code/var && \
             echo 'APP_SECRET=${{ secrets.HUMBLE_SECRET }}' > ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code/.env.local && \
             if [ -f ${{ vars.DEPLOY_PATH }}/.env.local ]; then
-              cat ${{ vars.DEPLOY_PATH }}/.env.local >> ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code/.env.local
+              ln -sfn ${{ vars.DEPLOY_PATH }}/.env.local ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code/.env.local
             fi
           "
           
@@ -66,11 +66,9 @@ jobs:
             php -v && composer -V || true
           "
           ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
-            set -e
-            export APP_ENV=prod APP_SECRET='${{ secrets.HUMBLE_SECRET }}'
-            cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code &&
-            (command -v composer >/dev/null 2>&1 && composer install --no-dev --optimize-autoloader --no-interaction --no-progress) || \
-            php composer.phar install --no-dev --optimize-autoloader --no-interaction --no-progress
+            cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code && \
+            (command -v composer >/dev/null 2>&1 && composer install --no-dev --optimize-autoloader) || \
+            php composer.phar install --no-dev --optimize-autoloader
             composer dump-env prod
           "
 
@@ -78,8 +76,8 @@ jobs:
         run: |
           ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
             cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code && \
-            php bin/console cache:clear --env=prod && \
-            php bin/console cache:warmup --env=prod
+            php bin/console cache:clear && \
+            php bin/console cache:warmup
           "
       
       - name: Activate release and reload
