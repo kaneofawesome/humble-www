@@ -99,7 +99,7 @@ jobs:
       - name: Give www-data the cache
         run: |
           ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
-            cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/var/cache && \
+            cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code/var/cache && \
             chown -R ${{ vars.SERVER_USER }}:www-data prod
           "
           
