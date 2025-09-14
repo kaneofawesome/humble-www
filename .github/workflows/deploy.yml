@@ -95,3 +95,18 @@ jobs:
         run: |
           ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} \
             "ln -sfn ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code ${{ vars.DEPLOY_PATH }}/current && sudo systemctl reload apache2"
+
+      - name: Post-deploy health check
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} << 'EOF'
+            set -euo pipefail
+            cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code
+            php -v
+            php -m | tr '\n' ' ' | fold -s
+            php bin/console about --env=prod || true
+            tail -n 200 var/log/apache2/humble-www_access.log || true
+            # Return nonzero if we see a 500 on /
+            status=$(curl -s -o /dev/null -w "%{http_code}" https://www.humblewizards.com/)
+            echo "HTTP status: $status"
+            test "$status" = "200"
+          EOF
