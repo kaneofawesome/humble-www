@@ -1,3 +1,16 @@
 framework:
     mailer:
         dsn: '%env(MAILER_DSN)%'
+        envelope:
+            sender: 'noreply@humblewizards.com'
+
+when@dev:
+    framework:
+        mailer:
+            # Use null transport for development (emails won't be sent but form will work)
+            dsn: 'null://null'
+
+when@test:
+    framework:
+        mailer:
+            dsn: 'null://null'
