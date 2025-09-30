@@ -1,6 +1,61 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="{{ user_theme|default('light') }}">
     <head>
+        {# Critical: Apply theme before any rendering to prevent flash #}
+        <script>
+            // Mark when script execution begins (approximate parse start)
+            performance.mark('theme-start');
+
+            (function() {
+                // Get theme from cookie if localStorage unavailable
+                function getThemeFromCookie() {
+                    const match = document.cookie.match(/theme=([^;]+)/);
+                    return match ? match[1] : null;
+                }
+
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const systemTheme = prefersDark ? 'dark' : 'light';
+                const savedTheme = localStorage.getItem('theme') ||
+                                   getThemeFromCookie() ||
+                                   systemTheme;
+                document.documentElement.setAttribute('data-theme', savedTheme);
+
+                // Sync cookie with current theme for server-side access
+                if (!getThemeFromCookie() || getThemeFromCookie() !== savedTheme) {
+                    document.cookie = `theme=${savedTheme};path=/;max-age=31536000;SameSite=Lax`;
+                }
+
+                // Mark when theme is applied
+                performance.mark('theme-end');
+                performance.measure('theme-application', 'theme-start', 'theme-end');
+
+                // Log if over 10ms threshold
+                const measure = performance.getEntriesByName('theme-application')[0];
+                if (measure && measure.duration > 10) {
+                    console.warn(`Theme application took ${measure.duration.toFixed(2)}ms (target: <10ms)`);
+                }
+            })();
+        </script>
+
+        <style>
+            /* Critical: Prevent flash of unstyled content */
+            html:not([data-theme]) {
+                visibility: hidden;
+                opacity: 0;
+            }
+            html[data-theme] {
+                visibility: visible;
+                opacity: 1;
+                /* No transition to ensure instant visibility */
+            }
+            /* Optional: If smooth appearance desired, use very short duration */
+            @media (prefers-reduced-motion: no-preference) {
+                html[data-theme] {
+                    transition: opacity 0.005s ease-out; /* 5ms max, well under 10ms target */
+                }
+            }
+        </style>
+
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>{% block title %}{{ pageTitle|default('Humble') }}{% endblock %}</title>
@@ -73,14 +128,6 @@
 
         {# Fallback scripts - ensure functionality even if main JS fails #}
         <script>
-            // Initialize theme immediately
-            (function() {
-                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                const systemTheme = prefersDark ? 'dark' : 'light';
-                const savedTheme = localStorage.getItem('theme') || systemTheme;
-                document.documentElement.setAttribute('data-theme', savedTheme);
-            })();
-
             document.addEventListener('DOMContentLoaded', function() {
                 // Mobile menu toggle
                 const navbarToggle = document.getElementById('navbar-toggle');
@@ -103,6 +150,8 @@
                         const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
                         document.documentElement.setAttribute('data-theme', newTheme);
                         localStorage.setItem('theme', newTheme);
+                        // Also set cookie for server-side access and no-JS fallback
+                        document.cookie = `theme=${newTheme};path=/;max-age=31536000;SameSite=Lax`;
                     });
                 }
             });
