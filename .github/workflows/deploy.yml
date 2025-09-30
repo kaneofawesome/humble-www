@@ -96,7 +96,9 @@ jobs:
         run: |
           ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
             cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code/var/cache && \
-            chown -R ${{ vars.SERVER_USER }}:www-data prod
+            chown -R ${{ vars.SERVER_USER }}:www-data prod && \
+            cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code &&\
+            chown -R ${{ vars.SERVER_USER }}:www-data var
           "
           
       - name: Activate release and reload
