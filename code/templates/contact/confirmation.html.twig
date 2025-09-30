@@ -5,18 +5,19 @@
 {% block description %}Your message has been received by the Humble Wizards. We'll be in touch soon!{% endblock %}
 
 {% block stylesheets %}
+    {{ parent() }}
 <style>
     .confirmation-container {
         max-width: 600px;
         margin: 4rem auto;
         padding: 0 1rem;
         text-align: center;
-        background: #F8F8F8;
-        color: #222222;
+        background: var(--bg-color, #F8F8F8);
+        color: var(--text-color, #222222);
     }
 
     .confirmation-card {
-        background: white;
+        background: var(--card-bg, white);
         padding: 3rem 2rem;
         border-radius: 12px;
         box-shadow: 0 4px 12px rgba(0,0,0,0.1);
@@ -58,11 +59,11 @@
         font-size: 1.1rem;
         line-height: 1.6;
         margin-bottom: 2rem;
-        color: #555;
+        color: var(--text-muted, #555);
     }
 
     .confirmation-details {
-        background: #f8f9fa;
+        background: var(--details-bg, #f8f9fa);
         padding: 1.5rem;
         border-radius: 8px;
         margin-bottom: 2rem;
@@ -200,21 +201,45 @@
     }
 
     /* Dark mode support */
+    [data-theme="dark"] {
+        --bg-color: #1a1a1a;
+        --text-color: #f0f0f0;
+        --card-bg: #2d2d2d;
+        --text-muted: #ccc;
+        --details-bg: #3d3d3d;
+    }
+
     [data-theme="dark"] .confirmation-container {
-        background: #1a1a1a;
-        color: #f0f0f0;
+        background: var(--bg-color);
+        color: var(--text-color);
     }
 
     [data-theme="dark"] .confirmation-card {
-        background: #2d2d2d;
+        background: var(--card-bg);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
 
     [data-theme="dark"] .confirmation-details {
-        background: #3d3d3d;
+        background: var(--details-bg);
+        border-left: 4px solid #B180F0;
+    }
+
+    [data-theme="dark"] .confirmation-details li {
+        border-bottom: 1px solid #4a4a4a;
     }
 
     [data-theme="dark"] .confirmation-message {
-        color: #ccc;
+        color: var(--text-muted);
+    }
+
+    [data-theme="dark"] .btn-secondary {
+        border-color: #37B5B6;
+        color: #37B5B6;
+    }
+
+    [data-theme="dark"] .btn-secondary:hover {
+        background: #37B5B6;
+        color: #1a1a1a;
     }
 </style>
 {% endblock %}
