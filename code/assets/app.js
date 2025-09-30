@@ -5,7 +5,8 @@ import './bootstrap.js';
  * This file will be included onto the page via the importmap() Twig function,
  * which should already be in your base.html.twig.
  */
-import './styles/app.css';
+// CSS is now loaded directly in base.html.twig via <link> tag
+// import './styles/app.css';
 
 // Theme switching functionality
 function initTheme() {
