@@ -29,3 +29,7 @@ services:
     App\Service\CaptchaService:
         arguments:
             $recaptchaSecretKey: '%app.recaptcha_secret_key%'
+
+    App\EventListener\ThemeListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, priority: 100 }
