@@ -1,0 +1,193 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ pageTitle }}{% endblock %}
+
+{% block description %}Get in touch with the Humble Wizards for engineering leadership coaching and software/hardware project assistance.{% endblock %}
+
+{% block body %}
+<section class="contact-section">
+    <div class="contact-container">
+        <div class="section-header">
+            <h1 class="section-title">Get in Touch ✨</h1>
+            <p class="section-subtitle">Ready to embark on your next adventure?</p>
+            <p class="wizard-greeting">Send a message to the Humble Wizards and we'll be in touch!</p>
+        </div>
+
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% endfor %}
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+
+        {% for message in app.flashes('info') %}
+            <div class="alert alert-info">{{ message }}</div>
+        {% endfor %}
+
+        {% if rate_limited is defined and rate_limited %}
+            <div class="alert alert-warning">
+                🚫 You have reached the maximum of 5 submissions per hour. Please try again later.
+            </div>
+        {% endif %}
+
+        <div class="form-container">
+            <div class="form-card">
+            {{ form_start(form, {'attr': {'class': 'contact-form', 'novalidate': 'novalidate'}}) }}
+
+                {# Basic form fields #}
+                {% for field in fields.basic.fields %}
+                    <div class="form-group">
+                        {{ form_label(form[field.name], null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form[field.name], {'attr': {'class': field.css_class}}) }}
+                        <div class="form-errors">{{ form_errors(form[field.name]) }}</div>
+                    </div>
+                {% endfor %}
+
+                {# Conditional sections #}
+                {% for section_key, section in fields.conditional %}
+                    <div id="{{ section.container_id }}" class="conditional-section" style="display: none;">
+                        <h3 class="conditional-title">{{ section.title }}</h3>
+                        {% for field in section.fields %}
+                            <div class="form-group">
+                                {{ form_label(form[field.name], null, {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form[field.name], {'attr': {'class': field.css_class}}) }}
+                                <div class="form-errors">{{ form_errors(form[field.name]) }}</div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+
+                <div class="captcha-section">
+                    <div id="recaptcha-container">
+                        <div class="g-recaptcha" data-sitekey="{{ recaptcha_site_key }}" data-callback="recaptchaCallback"></div>
+                        <p class="captcha-info">We use reCAPTCHA to prevent spam. Your privacy is protected.</p>
+                    </div>
+
+                    <div id="math-challenge" class="math-challenge-section" style="display: none;">
+                        <h4 class="math-title">Security Check:</h4>
+                        <div class="math-question">{{ math_challenge }}</div>
+                        <input type="number" name="math_answer" class="form-input math-answer" placeholder="Answer" required>
+                        <input type="hidden" name="math_challenge_id" value="{{ math_challenge_id }}">
+                        <p class="captcha-info">Please solve this simple math problem to verify you're human.</p>
+                    </div>
+                </div>
+
+                {{ form_widget(form.captchaToken) }}
+                {{ form_widget(form.mathChallengeAnswer) }}
+
+                <div class="form-submit">
+                    {{ form_widget(form.submit, {'attr': {'class': 'btn btn-primary btn-large'}}) }}
+                </div>
+
+            {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://www.google.com/recaptcha/api.js?onload=initRecaptcha&render=explicit" async defer></script>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        // Conditional fields toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const serviceTypeSelect = document.querySelector('[name="contact_form[serviceType]"]');
+            const coachingFields = document.getElementById('coaching-fields');
+            const projectFields = document.getElementById('project-fields');
+
+            function toggleFields() {
+                const value = serviceTypeSelect.value;
+
+                if (value === 'coaching') {
+                    coachingFields.style.display = 'block';
+                    projectFields.style.display = 'none';
+                } else if (value === 'project') {
+                    coachingFields.style.display = 'none';
+                    projectFields.style.display = 'block';
+                } else {
+                    coachingFields.style.display = 'none';
+                    projectFields.style.display = 'none';
+                }
+            }
+
+            serviceTypeSelect.addEventListener('change', toggleFields);
+            toggleFields(); // Initial check
+        });
+
+        // reCAPTCHA integration
+        let recaptchaWidget;
+
+        function initRecaptcha() {
+            // Check if reCAPTCHA is properly configured
+            const siteKey = '{{ recaptcha_site_key }}';
+            if (typeof grecaptcha !== 'undefined' && siteKey && siteKey !== 'your_site_key_here') {
+                try {
+                    recaptchaWidget = grecaptcha.render('recaptcha-container', {
+                        'sitekey': siteKey,
+                        'callback': recaptchaCallback,
+                        'error-callback': recaptchaError
+                    });
+                } catch (e) {
+                    console.log('reCAPTCHA failed to load, using math challenge');
+                    showMathChallenge();
+                }
+            } else {
+                // Fallback to math challenge if reCAPTCHA not available or not configured
+                console.log('reCAPTCHA not configured, using math challenge');
+                showMathChallenge();
+            }
+        }
+
+        function recaptchaCallback(token) {
+            document.querySelector('[name="contact_form[captchaToken]"]').value = token;
+            document.getElementById('contact_form_submit').disabled = false;
+        }
+
+        function recaptchaError() {
+            showMathChallenge();
+        }
+
+        function showMathChallenge() {
+            document.getElementById('recaptcha-container').style.display = 'none';
+            document.getElementById('math-challenge').style.display = 'block';
+
+            // Enable the submit button for math challenge
+            const submitBtn = document.getElementById('contact_form_submit');
+            if (submitBtn) {
+                submitBtn.disabled = false;
+            }
+
+            document.querySelector('[name="math_answer"]').addEventListener('input', function() {
+                if (this.value.trim()) {
+                    document.querySelector('[name="contact_form[mathChallengeAnswer]"]').value = this.value;
+                }
+            });
+        }
+
+        // Handle network errors and fallback
+        window.addEventListener('error', function(e) {
+            if (e.target && e.target.src && e.target.src.includes('recaptcha')) {
+                showMathChallenge();
+            }
+        });
+
+        // Initially disable submit until captcha is completed
+        document.addEventListener('DOMContentLoaded', function() {
+            const submitBtn = document.getElementById('contact_form_submit');
+            if (document.getElementById('recaptcha-container').style.display !== 'none') {
+                submitBtn.disabled = true;
+            }
+
+            // Fallback: if reCAPTCHA script doesn't load within 5 seconds, show math challenge
+            setTimeout(function() {
+                if (!recaptchaWidget && document.getElementById('math-challenge').style.display === 'none') {
+                    console.log('reCAPTCHA timeout, using math challenge');
+                    showMathChallenge();
+                }
+            }, 5000);
+        });
+    </script>
+{% endblock %}
