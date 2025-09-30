@@ -71,9 +71,18 @@
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
 
-        {# Fallback mobile menu script - ensures menu works even if main JS fails #}
+        {# Fallback scripts - ensure functionality even if main JS fails #}
         <script>
+            // Initialize theme immediately
+            (function() {
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const systemTheme = prefersDark ? 'dark' : 'light';
+                const savedTheme = localStorage.getItem('theme') || systemTheme;
+                document.documentElement.setAttribute('data-theme', savedTheme);
+            })();
+
             document.addEventListener('DOMContentLoaded', function() {
+                // Mobile menu toggle
                 const navbarToggle = document.getElementById('navbar-toggle');
                 const navbarMenu = document.getElementById('navbar-menu');
 
@@ -82,6 +91,18 @@
                         e.preventDefault();
                         navbarMenu.classList.toggle('active');
                         navbarToggle.classList.toggle('active');
+                    });
+                }
+
+                // Theme toggle
+                const themeToggle = document.getElementById('theme-toggle');
+                if (themeToggle) {
+                    themeToggle.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+                        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                        document.documentElement.setAttribute('data-theme', newTheme);
+                        localStorage.setItem('theme', newTheme);
                     });
                 }
             });
