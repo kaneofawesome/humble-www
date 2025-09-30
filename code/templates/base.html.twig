@@ -70,5 +70,21 @@
         {% block javascripts %}
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
+
+        {# Fallback mobile menu script - ensures menu works even if main JS fails #}
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const navbarToggle = document.getElementById('navbar-toggle');
+                const navbarMenu = document.getElementById('navbar-menu');
+
+                if (navbarToggle && navbarMenu) {
+                    navbarToggle.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        navbarMenu.classList.toggle('active');
+                        navbarToggle.classList.toggle('active');
+                    });
+                }
+            });
+        </script>
     </body>
 </html>

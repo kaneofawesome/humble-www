@@ -869,6 +869,19 @@ strong, b, em, i {
     .navbar-menu.active {
         display: block;
     }
+
+    /* Hamburger animation */
+    .navbar-toggle.active .bar:nth-child(1) {
+        transform: translateY(8px) rotate(45deg);
+    }
+
+    .navbar-toggle.active .bar:nth-child(2) {
+        opacity: 0;
+    }
+
+    .navbar-toggle.active .bar:nth-child(3) {
+        transform: translateY(-8px) rotate(-45deg);
+    }
     
     .navbar-nav {
         flex-direction: column;
