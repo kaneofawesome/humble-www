@@ -100,7 +100,7 @@ jobs:
         run: |
           ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
             cd ${{ vars.RELEASES_DIR_DEV }}/${{ env.RELEASE }}/code/var/cache && \
-            chown -R ${{ vars.SERVER_USER }}:www-data dev && \
+            chown -R ${{ vars.SERVER_USER }}:www-data prod && \
             cd ${{ vars.RELEASES_DIR_DEV }}/${{ env.RELEASE }}/code &&\
             chown -R ${{ vars.SERVER_USER }}:www-data var
           "
