@@ -22,14 +22,14 @@ jobs:
       - name: Add host to known_hosts
         run: |
           mkdir -p ~/.ssh
-          ssh-keyscan -H "staging.humblewizards.com" >> ~/.ssh/known_hosts
+          ssh-keyscan -H "${{ vars.SERVER_HOST }}" >> ~/.ssh/known_hosts
 
       - name: Set release ID
         run: echo "RELEASE=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
 
       - name: Create release dir on server
         run: |
-          ssh ${{ vars.SERVER_USER }}@staging.humblewizards.com \
+          ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} \
             "mkdir -p ${{ vars.RELEASES_DIR_DEV }}/${{ env.RELEASE }}/"
 
       - name: Rsync files to server
@@ -39,11 +39,11 @@ jobs:
             --exclude='.github' \
             --exclude='var' \
             -e "ssh" ./ \
-            ${{ vars.SERVER_USER }}@staging.humblewizards.com:${{ vars.RELEASES_DIR_DEV }}/${{ env.RELEASE }}/
+            ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }}:${{ vars.RELEASES_DIR_DEV }}/${{ env.RELEASE }}/
 
       - name: Verify layout
         run: |
-          ssh ${{ vars.SERVER_USER }}@staging.humblewizards.com "
+          ssh ${{ vars.SERVER_USER }}${{ vars.SERVER_HOST }} "
             echo 'DEPLOY_PATH_DEV=${{ vars.DEPLOY_PATH_DEV }}'; \
             echo 'RELEASES_DIR_DEV=${{ vars.RELEASES_DIR_DEV }}'; \
             ls -ld ${{ vars.DEPLOY_PATH_DEV }} ${{ vars.DEPLOY_PATH_DEV }}/current || true; \
@@ -53,7 +53,7 @@ jobs:
 
       - name: Link shared files/dirs and set secrets
         run: |
-          ssh ${{ vars.SERVER_USER }}@staging.humblewizards.com "
+          ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
             mkdir -p ${{ vars.DEPLOY_PATH_DEV }}/code/shared/var && \
             ln -sfn ${{ vars.DEPLOY_PATH_DEV }}/code/shared/var ${{ vars.RELEASES_DIR_DEV }}/${{ env.RELEASE }}/code/var && \
             echo 'APP_SECRET=${{ secrets.HUMBLE_SECRET }}' > ${{ vars.RELEASES_DIR_DEV }}/${{ env.RELEASE }}/code/.env.local && \
@@ -65,11 +65,11 @@ jobs:
 
       - name: Compose on server
         run: |
-          ssh ${{ vars.SERVER_USER }}@staging.humblewizards.com "
+          ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
             cd ${{ vars.RELEASES_DIR_DEV }}/${{ env.RELEASE }} && \
             php -v && composer -V || true
           "
-          ssh ${{ vars.SERVER_USER }}@staging.humblewizards.com "
+          ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
             cd ${{ vars.RELEASES_DIR_DEV }}/${{ env.RELEASE }}/code && \
             (command -v composer >/dev/null 2>&1 && APP_ENV=dev DATABASE_URL=${{ secrets.DATABASE_URL_DEV }} APP_DEBUG=1 composer install --optimize-autoloader) || \
             APP_ENV=dev DATABASE_URL=${{ secrets.DATABASE_URL_DEV }} APP_DEBUG=1 php composer.phar install --optimize-autoloader
@@ -78,26 +78,27 @@ jobs:
 
       - name: Composer update
         run: |
-          ssh ${{ vars.SERVER_USER }}@staging.humblewizards.com "
+          ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
             cd ${{ vars.RELEASES_DIR_DEV }}/${{ env.RELEASE }} && \
             php -v && composer -V || true
           "
-          ssh ${{ vars.SERVER_USER }}@staging.humblewizards.com "
+          ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
             cd ${{ vars.RELEASES_DIR_DEV }}/${{ env.RELEASE }}/code && \
             composer update
           "
 
       - name: Warm cache and compile assets (dev)
         run: |
-          ssh ${{ vars.SERVER_USER }}@staging.humblewizards.com "
+          ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
             cd ${{ vars.RELEASES_DIR_DEV }}/${{ env.RELEASE }}/code && \
             APP_ENV=dev DATABASE_URL=${{ secrets.DATABASE_URL_DEV }} APP_DEBUG=1 php bin/console cache:clear && \
-            APP_ENV=dev DATABASE_URL=${{ secrets.DATABASE_URL_DEV }} APP_DEBUG=1 php bin/console cache:warmup
+            APP_ENV=dev DATABASE_URL=${{ secrets.DATABASE_URL_DEV }} APP_DEBUG=1 php bin/console cache:warmup && \
+            APP_ENV=dev DATABASE_URL=${{ secrets.DATABASE_URL_DEV }} APP_DEBUG=1 php bin/console asset-map:compile
           "
 
       - name: Give www-data the cache
         run: |
-          ssh ${{ vars.SERVER_USER }}@staging.humblewizards.com "
+          ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
             cd ${{ vars.RELEASES_DIR_DEV }}/${{ env.RELEASE }}/code/var/cache && \
             chown -R ${{ vars.SERVER_USER }}:www-data dev && \
             cd ${{ vars.RELEASES_DIR_DEV }}/${{ env.RELEASE }}/code &&\
