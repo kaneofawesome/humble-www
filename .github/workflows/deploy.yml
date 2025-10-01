@@ -3,10 +3,116 @@ name: Deploy to Lightsail
 on:
   push:
     branches: [ "main" ]
+    tags: [ "v*" ]
 
 jobs:
-  deploy:
+  deploy-dev:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    environment: development
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_KEY }}
+
+      - name: Add host to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H "staging.humblewizards.com" >> ~/.ssh/known_hosts
+
+      - name: Set release ID
+        run: echo "RELEASE=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
+
+      - name: Create release dir on server
+        run: |
+          ssh ${{ vars.SERVER_USER }}@staging.humblewizards.com \
+            "mkdir -p ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/"
+
+      - name: Rsync files to server
+        run: |
+          rsync -az --delete \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='var' \
+            -e "ssh" ./ \
+            ${{ vars.SERVER_USER }}@staging.humblewizards.com:${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/
+
+      - name: Verify layout
+        run: |
+          ssh ${{ vars.SERVER_USER }}@staging.humblewizards.com "
+            echo 'DEPLOY_PATH=${{ vars.DEPLOY_PATH }}'; \
+            echo 'RELEASES_DIR=${{ vars.RELEASES_DIR }}'; \
+            ls -ld ${{ vars.DEPLOY_PATH }} ${{ vars.DEPLOY_PATH }}/current || true; \
+            ls -ld ${{ vars.RELEASES_DIR }} || true; \
+            readlink -f ${{ vars.DEPLOY_PATH }}/current || true
+          "
+
+      - name: Link shared files/dirs and set secrets
+        run: |
+          ssh ${{ vars.SERVER_USER }}@staging.humblewizards.com "
+            mkdir -p ${{ vars.DEPLOY_PATH }}/code/shared/var && \
+            ln -sfn ${{ vars.DEPLOY_PATH }}/code/shared/var ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code/var && \
+            echo 'APP_SECRET=${{ secrets.HUMBLE_SECRET }}' > ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code/.env.local && \
+            echo 'DATABASE_URL=${{ secrets.DATABASE_URL_DEV }}' >> ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code/.env.local && \
+            echo 'APP_ENV=dev' >> ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code/.env.local && \
+            echo 'APP_DEBUG=1' >> ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code/.env.local && \
+            echo 'MAILER_DSN=smtp://127.0.0.1:1025' >> ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code/.env.local
+          "
+
+      - name: Compose on server
+        run: |
+          ssh ${{ vars.SERVER_USER }}@staging.humblewizards.com "
+            cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }} && \
+            php -v && composer -V || true
+          "
+          ssh ${{ vars.SERVER_USER }}@staging.humblewizards.com "
+            cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code && \
+            (command -v composer >/dev/null 2>&1 && APP_ENV=dev DATABASE_URL=${{ secrets.DATABASE_URL_DEV }} APP_DEBUG=1 composer install --optimize-autoloader) || \
+            APP_ENV=dev DATABASE_URL=${{ secrets.DATABASE_URL_DEV }} APP_DEBUG=1 php composer.phar install --optimize-autoloader
+            composer dump-env dev
+          "
+
+      - name: Composer update
+        run: |
+          ssh ${{ vars.SERVER_USER }}@staging.humblewizards.com "
+            cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }} && \
+            php -v && composer -V || true
+          "
+          ssh ${{ vars.SERVER_USER }}@staging.humblewizards.com "
+            cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code && \
+            composer update
+          "
+
+      - name: Warm cache and compile assets (dev)
+        run: |
+          ssh ${{ vars.SERVER_USER }}@staging.humblewizards.com "
+            cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code && \
+            APP_ENV=dev DATABASE_URL=${{ secrets.DATABASE_URL_DEV }} APP_DEBUG=1 php bin/console cache:clear && \
+            APP_ENV=dev DATABASE_URL=${{ secrets.DATABASE_URL_DEV }} APP_DEBUG=1 php bin/console cache:warmup
+          "
+
+      - name: Give www-data the cache
+        run: |
+          ssh ${{ vars.SERVER_USER }}@staging.humblewizards.com "
+            cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code/var/cache && \
+            chown -R ${{ vars.SERVER_USER }}:www-data dev && \
+            cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code &&\
+            chown -R ${{ vars.SERVER_USER }}:www-data var
+          "
+
+      - name: Activate release and reload
+        run: |
+          ssh ${{ vars.SERVER_USER }}@staging.humblewizards.com \
+            "ln -sfn ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code ${{ vars.DEPLOY_PATH }}/current && sudo systemctl reload apache2"
+
+  deploy-prod:
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    environment: production
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -28,7 +134,7 @@ jobs:
         run: |
           ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} \
             "mkdir -p ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/"
-            
+
       - name: Rsync files to server
         run: |
           rsync -az --delete \
@@ -47,7 +153,7 @@ jobs:
             ls -ld ${{ vars.RELEASES_DIR }} || true; \
             readlink -f ${{ vars.DEPLOY_PATH }}/current || true
           "
-    
+
       - name: Link shared files/dirs and set secrets
         run: |
           ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
@@ -59,7 +165,7 @@ jobs:
               ln -sfn ${{ vars.DEPLOY_PATH }}/.env.local ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code/.env.local
             fi
           "
-          
+
       - name: Compose on server
         run: |
           ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
@@ -101,9 +207,8 @@ jobs:
             cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code &&\
             chown -R ${{ vars.SERVER_USER }}:www-data var
           "
-          
+
       - name: Activate release and reload
         run: |
           ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} \
             "ln -sfn ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code ${{ vars.DEPLOY_PATH }}/current && sudo systemctl reload apache2"
-            
