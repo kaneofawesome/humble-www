@@ -21,7 +21,7 @@ class ContactEmailService
     {
         try {
             $email = (new Email())
-                ->from('noreply@humbledevops.org')
+                ->from($this->businessOwnerEmail)
                 ->to($this->businessOwnerEmail)
                 ->subject('New Contact Form Submission')
                 ->text($this->renderBusinessNotificationText($formData, $clientIp));
@@ -51,7 +51,7 @@ class ContactEmailService
 
         try {
             $email = (new Email())
-                ->from('noreply@humbledevops.org')
+                ->from($this->businessOwnerEmail)
                 ->to($formData['email'])
                 ->subject('✨ Your message has been received ✨')
                 ->html($this->renderUserConfirmationHtml($formData))
