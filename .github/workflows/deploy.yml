@@ -43,7 +43,7 @@ jobs:
 
       - name: Verify layout
         run: |
-          ssh ${{ vars.SERVER_USER }}${{ vars.SERVER_HOST }} "
+          ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
             echo 'DEPLOY_PATH_DEV=${{ vars.DEPLOY_PATH_DEV }}'; \
             echo 'RELEASES_DIR_DEV=${{ vars.RELEASES_DIR_DEV }}'; \
             ls -ld ${{ vars.DEPLOY_PATH_DEV }} ${{ vars.DEPLOY_PATH_DEV }}/current || true; \
