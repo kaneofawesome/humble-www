@@ -107,7 +107,7 @@ jobs:
 
       - name: Activate release and reload
         run: |
-          ssh ${{ vars.SERVER_USER }}@staging.humblewizards.com \
+          ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} \
             "ln -sfn ${{ vars.RELEASES_DIR_DEV }}/${{ env.RELEASE }}/code ${{ vars.DEPLOY_PATH_DEV }}/current && sudo systemctl reload apache2"
 
   deploy-prod:
