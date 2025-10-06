@@ -110,7 +110,7 @@ jobs:
       - name: Activate release and reload
         run: |
           ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} \
-            "ln -sfn ${{ vars.RELEASES_DIR_DEV }}/${{ env.RELEASE }}/code ${{ vars.DEPLOY_PATH_DEV }}/current && sudo systemctl reload apache2"
+            "ln -sfn ${{ vars.RELEASES_DIR_DEV }}/${{ env.RELEASE }}/code ${{ vars.DEPLOY_PATH_DEV }}/current && sudo systemctl reload apache2 && sudo systemctl restart humble-messenger-worker-staging"
 
   deploy-prod:
     if: startsWith(github.ref, 'refs/tags/v')
@@ -236,4 +236,4 @@ jobs:
       - name: Activate release and reload
         run: |
           ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} \
-            "ln -sfn ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code ${{ vars.DEPLOY_PATH }}/current && sudo systemctl reload apache2"
+            "ln -sfn ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code ${{ vars.DEPLOY_PATH }}/current && sudo systemctl reload apache2 && sudo systemctl restart humble-messenger-worker"
