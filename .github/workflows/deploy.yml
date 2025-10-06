@@ -56,7 +56,7 @@ jobs:
           ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
             mkdir -p ${{ vars.DEPLOY_PATH_DEV }}/code/shared/var/log && \
             mkdir -p ${{ vars.DEPLOY_PATH_DEV }}/code/shared/var/cache && \
-            chown -R www-data:www-data ${{ vars.DEPLOY_PATH_DEV }}/code/shared/var && \
+            chown -R ${{ vars.SERVER_USER }}:www-data ${{ vars.DEPLOY_PATH_DEV }}/code/shared/var && \
             ln -sfn ${{ vars.DEPLOY_PATH_DEV }}/code/shared/var ${{ vars.RELEASES_DIR_DEV }}/${{ env.RELEASE }}/code/var && \
             cp ${{ vars.DEPLOY_PATH_DEV }}/.env.local ${{ vars.RELEASES_DIR_DEV }}/${{ env.RELEASE }}/code/.env.local
           "
