@@ -7,8 +7,8 @@ framework:
 when@dev:
     framework:
         mailer:
-            # Use null transport for development (emails won't be sent but form will work)
-            dsn: 'null://null'
+            dsn: 'smtp://127.0.0.1:1025?encryption=null&auth_mode=null'
+            message_bus: false
 
 when@test:
     framework:

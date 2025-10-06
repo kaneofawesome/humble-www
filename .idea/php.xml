@@ -36,7 +36,6 @@
       <path value="$PROJECT_DIR$/code/vendor/symfony/runtime" />
       <path value="$PROJECT_DIR$/code/vendor/symfony/asset-mapper" />
       <path value="$PROJECT_DIR$/code/vendor/symfony/form" />
-      <path value="$PROJECT_DIR$/code/vendor/symfony/cache" />
       <path value="$PROJECT_DIR$/code/vendor/symfony/monolog-bundle" />
       <path value="$PROJECT_DIR$/code/vendor/symfony/polyfill-intl-grapheme" />
       <path value="$PROJECT_DIR$/code/vendor/symfony/css-selector" />
@@ -65,7 +64,6 @@
       <path value="$PROJECT_DIR$/code/vendor/doctrine/inflector" />
       <path value="$PROJECT_DIR$/code/vendor/symfony/http-foundation" />
       <path value="$PROJECT_DIR$/code/vendor/doctrine/migrations" />
-      <path value="$PROJECT_DIR$/code/vendor/symfony/framework-bundle" />
       <path value="$PROJECT_DIR$/code/vendor/doctrine/doctrine-migrations-bundle" />
       <path value="$PROJECT_DIR$/code/vendor/symfony/translation-contracts" />
       <path value="$PROJECT_DIR$/code/vendor/symfony/dom-crawler" />
@@ -88,7 +86,6 @@
       <path value="$PROJECT_DIR$/code/vendor/symfony/doctrine-bridge" />
       <path value="$PROJECT_DIR$/code/vendor/symfony/polyfill-intl-normalizer" />
       <path value="$PROJECT_DIR$/code/vendor/symfony/dependency-injection" />
-      <path value="$PROJECT_DIR$/code/vendor/symfony/config" />
       <path value="$PROJECT_DIR$/code/vendor/symfony/mime" />
       <path value="$PROJECT_DIR$/code/vendor/symfony/mailer" />
       <path value="$PROJECT_DIR$/code/vendor/symfony/security-http" />
@@ -140,6 +137,9 @@
       <path value="$PROJECT_DIR$/code/vendor/sebastian/object-enumerator" />
       <path value="$PROJECT_DIR$/code/vendor/sebastian/comparator" />
       <path value="$PROJECT_DIR$/code/vendor/karser/karser-recaptcha3-bundle" />
+      <path value="$PROJECT_DIR$/code/vendor/symfony/cache" />
+      <path value="$PROJECT_DIR$/code/vendor/symfony/framework-bundle" />
+      <path value="$PROJECT_DIR$/code/vendor/symfony/config" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.2">
