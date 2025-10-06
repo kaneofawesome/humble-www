@@ -75,7 +75,6 @@ jobs:
             cd ${{ vars.RELEASES_DIR_DEV }}/${{ env.RELEASE }}/code && \
             (command -v composer >/dev/null 2>&1 && APP_ENV=dev DATABASE_URL=${{ secrets.DATABASE_URL_DEV }} APP_DEBUG=1 composer install --optimize-autoloader) || \
             APP_ENV=dev DATABASE_URL=${{ secrets.DATABASE_URL_DEV }} APP_DEBUG=1 php composer.phar install --optimize-autoloader
-            composer dump-env dev
           "
 
       - name: Composer update
