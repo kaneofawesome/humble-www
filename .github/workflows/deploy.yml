@@ -61,7 +61,7 @@ jobs:
             echo \"APP_ENV=dev\" >> ${{ vars.RELEASES_DIR_DEV }}/${{ env.RELEASE }}/code/.env.local && \
             echo \"APP_DEBUG=1\" >> ${{ vars.RELEASES_DIR_DEV }}/${{ env.RELEASE }}/code/.env.local && \
             if [ -f ${{ vars.DEPLOY_PATH_DEV }}/.env.local ]; then \
-              ln -sfn ${{ vars.DEPLOY_PATH_DEV }}/.env.local ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code/.env.local; \
+              ln -sfn ${{ vars.DEPLOY_PATH_DEV }}/.env.local ${{ vars.RELEASES_DIR_DEV }}/${{ env.RELEASE }}/code/.env.local; \
             fi
           "
 
