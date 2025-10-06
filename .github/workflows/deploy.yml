@@ -59,8 +59,7 @@ jobs:
             echo 'APP_SECRET=${{ secrets.HUMBLE_SECRET }}' > ${{ vars.RELEASES_DIR_DEV }}/${{ env.RELEASE }}/code/.env.local && \
             echo 'DATABASE_URL=${{ secrets.DATABASE_URL_DEV }}' >> ${{ vars.RELEASES_DIR_DEV }}/${{ env.RELEASE }}/code/.env.local && \
             echo 'APP_ENV=dev' >> ${{ vars.RELEASES_DIR_DEV }}/${{ env.RELEASE }}/code/.env.local && \
-            echo 'APP_DEBUG=1' >> ${{ vars.RELEASES_DIR_DEV }}/${{ env.RELEASE }}/code/.env.local && \
-            echo 'MAILER_DSN=smtp://127.0.0.1:1025' >> ${{ vars.RELEASES_DIR_DEV }}/${{ env.RELEASE }}/code/.env.local
+            echo 'APP_DEBUG=1' >> ${{ vars.RELEASES_DIR_DEV }}/${{ env.RELEASE }}/code/.env.local
           "
 
       - name: Compose on server
@@ -71,8 +70,8 @@ jobs:
           "
           ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
             cd ${{ vars.RELEASES_DIR_DEV }}/${{ env.RELEASE }}/code && \
-            (command -v composer >/dev/null 2>&1 && APP_ENV=dev DATABASE_URL=${{ secrets.DATABASE_URL_DEV }} MAILER_DSN=smtp://127.0.0.1:1025 APP_DEBUG=1 composer install --optimize-autoloader) || \
-            APP_ENV=dev DATABASE_URL=${{ secrets.DATABASE_URL_DEV }} MAILER_DSN=smtp://127.0.0.1:1025 APP_DEBUG=1 php composer.phar install --optimize-autoloader
+            (command -v composer >/dev/null 2>&1 && APP_ENV=dev DATABASE_URL=${{ secrets.DATABASE_URL_DEV }} APP_DEBUG=1 composer install --optimize-autoloader) || \
+            APP_ENV=dev DATABASE_URL=${{ secrets.DATABASE_URL_DEV }} APP_DEBUG=1 php composer.phar install --optimize-autoloader
             composer dump-env dev
           "
 
