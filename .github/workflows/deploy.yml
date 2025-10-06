@@ -176,17 +176,17 @@ jobs:
           "
           ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
             cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code && \
+            (command -v composer >/dev/null 2>&1 &&  APP_ENV=prod DATABASE_URL=${{ secrets.DATABASE_URL }} MAILER_DSN=${{ secrets.MAILER_DSN_PROD }} APP_DEBUG=0 composer install --no-dev --optimize-autoloader) || \
+            APP_ENV=prod DATABASE_URL=${{ secrets.DATABASE_URL }} MAILER_DSN=${{ secrets.MAILER_DSN_PROD }} APP_DEBUG=0 php composer.phar install --no-dev --optimize-autoloader
+            composer dump-env prod
+          "
+          ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
+            cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code && \
             php bin/console secrets:generate-keys --env=prod"
           "
           ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
             cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code && \
             php bin/console secrets:set MAILER_DSN --env=prod --no-interaction <<< "${secrets.MAILER_DSN_PROD}"
-          "
-          ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
-            cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code && \
-            (command -v composer >/dev/null 2>&1 &&  APP_ENV=prod DATABASE_URL=${{ secrets.DATABASE_URL }} MAILER_DSN=${{ secrets.MAILER_DSN_PROD }} APP_DEBUG=0 composer install --no-dev --optimize-autoloader) || \
-            APP_ENV=prod DATABASE_URL=${{ secrets.DATABASE_URL }} MAILER_DSN=${{ secrets.MAILER_DSN_PROD }} APP_DEBUG=0 php composer.phar install --no-dev --optimize-autoloader
-            composer dump-env prod
           "
 
       - name: Composer update
