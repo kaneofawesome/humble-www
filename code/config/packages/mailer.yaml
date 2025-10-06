@@ -10,6 +10,12 @@ when@dev:
             dsn: 'smtp://127.0.0.1:1025?encryption=null&auth_mode=null'
             message_bus: false
 
+when@staging:
+    framework:
+        mailer:
+            dsn: 'smtp://127.0.0.1:1025?encryption=null&auth_mode=null'
+            message_bus: false
+
 when@test:
     framework:
         mailer:
