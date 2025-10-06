@@ -2,7 +2,7 @@ framework:
     mailer:
         dsn: '%env(MAILER_DSN)%'
         envelope:
-            sender: 'noreply@humblewizards.com'
+            sender: 'kane@humblewizards.com'
 
 when@dev:
     framework:
