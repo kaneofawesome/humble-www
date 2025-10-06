@@ -71,8 +71,8 @@ jobs:
           "
           ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
             cd ${{ vars.RELEASES_DIR_DEV }}/${{ env.RELEASE }}/code && \
-            (command -v composer >/dev/null 2>&1 && APP_ENV=dev DATABASE_URL=${{ secrets.DATABASE_URL_DEV }} APP_DEBUG=1 composer install --optimize-autoloader) || \
-            APP_ENV=dev DATABASE_URL=${{ secrets.DATABASE_URL_DEV }} APP_DEBUG=1 php composer.phar install --optimize-autoloader
+            (command -v composer >/dev/null 2>&1 && APP_ENV=dev DATABASE_URL=${{ secrets.DATABASE_URL_DEV }} MAILER_DSN=smtp://127.0.0.1:1025 APP_DEBUG=1 composer install --optimize-autoloader) || \
+            APP_ENV=dev DATABASE_URL=${{ secrets.DATABASE_URL_DEV }} MAILER_DSN=smtp://127.0.0.1:1025 APP_DEBUG=1 php composer.phar install --optimize-autoloader
             composer dump-env dev
           "
 
@@ -91,9 +91,9 @@ jobs:
         run: |
           ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
             cd ${{ vars.RELEASES_DIR_DEV }}/${{ env.RELEASE }}/code && \
-            APP_ENV=dev DATABASE_URL=${{ secrets.DATABASE_URL_DEV }} APP_DEBUG=1 php bin/console cache:clear && \
-            APP_ENV=dev DATABASE_URL=${{ secrets.DATABASE_URL_DEV }} APP_DEBUG=1 php bin/console cache:warmup && \
-            APP_ENV=dev DATABASE_URL=${{ secrets.DATABASE_URL_DEV }} APP_DEBUG=1 php bin/console asset-map:compile
+            APP_ENV=dev DATABASE_URL=${{ secrets.DATABASE_URL_DEV }} MAILER_DSN=smtp://127.0.0.1:1025 APP_DEBUG=1 php bin/console cache:clear && \
+            APP_ENV=dev DATABASE_URL=${{ secrets.DATABASE_URL_DEV }} MAILER_DSN=smtp://127.0.0.1:1025 APP_DEBUG=1 php bin/console cache:warmup && \
+            APP_ENV=dev DATABASE_URL=${{ secrets.DATABASE_URL_DEV }} MAILER_DSN=smtp://127.0.0.1:1025 APP_DEBUG=1 php bin/console asset-map:compile
           "
 
       - name: Give www-data the cache
