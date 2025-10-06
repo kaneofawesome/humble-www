@@ -183,7 +183,6 @@ jobs:
             cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code && \
             (command -v composer >/dev/null 2>&1 &&  APP_ENV=prod DATABASE_URL=${{ secrets.DATABASE_URL }} MAILER_DSN=${{ secrets.MAILER_DSN_PROD }} APP_DEBUG=0 composer install --no-dev --optimize-autoloader) || \
             APP_ENV=prod DATABASE_URL=${{ secrets.DATABASE_URL }} MAILER_DSN=${{ secrets.MAILER_DSN_PROD }} APP_DEBUG=0 php composer.phar install --no-dev --optimize-autoloader
-            composer dump-env prod
           "
           ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
             cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code && \
@@ -192,6 +191,10 @@ jobs:
           ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
             cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code && \
             php bin/console secrets:set --env=prod --no-interaction MAILER_DSN "$MAILER_DSN"
+          "
+          ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
+            cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code && \
+            composer dump-env prod
           "
 
       - name: Composer update
