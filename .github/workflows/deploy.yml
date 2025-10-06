@@ -162,8 +162,8 @@ jobs:
             echo 'APP_SECRET=${{ secrets.HUMBLE_SECRET }}' > ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code/.env.local && \
             echo 'DATABASE_URL=${{ secrets.DATABASE_URL }}' >> ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code/.env.local && \
             echo 'MAILER_DSN=${{ secrets.MAILER_DSN_PROD }}' >> ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code/.env.local && \
-            if [ -f ${{ vars.DEPLOY_PATH }}/.env.local ]; then
-              ln -sfn ${{ vars.DEPLOY_PATH }}/.env.local ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code/.env.local
+            if [ -f ${{ vars.DEPLOY_PATH }}/.env.local ]; then \
+              ln -sfn ${{ vars.DEPLOY_PATH }}/.env.local ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code/.env.local; \
             fi
           "
 
