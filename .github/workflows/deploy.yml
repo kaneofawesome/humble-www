@@ -193,22 +193,6 @@ jobs:
             composer update
           "
 
-      - name: Compose on server
-        env:
-          APP_ENV: prod
-          APP_DEBUG: 0
-          MAILER_DSN: ${{ secrets.MAILER_DSN_PROD }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: |
-          ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
-            cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code && \
-            php bin/console secrets:generate-keys --env=prod || true
-          "
-          ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
-            cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code && \
-            php bin/console secrets:set --env=prod --no-interaction MAILER_DSN \"$MAILER_DSN\"
-          "
-
       - name: Warm cache and compile assets (prod)
         run: |
           ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
