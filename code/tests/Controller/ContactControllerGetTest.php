@@ -30,8 +30,6 @@ class ContactControllerGetTest extends WebTestCase
 
     public function testHttpRedirectsToHttps(): void
     {
-        // This test will verify HTTPS enforcement is working
-        // Implementation will be added during security configuration phase
         $this->markTestSkipped('Will be implemented with HTTPS enforcement');
     }
 
@@ -41,8 +39,6 @@ class ContactControllerGetTest extends WebTestCase
         $client->request('GET', '/contact');
 
         $this->assertResponseIsSuccessful();
-        // Should have reCAPTCHA or math challenge
-        // This test will fail until reCAPTCHA integration is complete
         $this->assertSelectorExists('[data-sitekey]');
     }
 

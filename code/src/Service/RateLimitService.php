@@ -12,12 +12,17 @@ class RateLimitService
 
     public function __construct(
         private RateLimitEntryRepository $rateLimitRepository,
-        private LoggerInterface $logger
+        private LoggerInterface $logger,
+        private bool $skipRateLimiting = false
     ) {
     }
 
     public function isRateLimited(string $ipAddress): bool
     {
+        if ($this->skipRateLimiting) {
+            return false;
+        }
+
         try {
             $entry = $this->rateLimitRepository->findByIpAddress($ipAddress);
 

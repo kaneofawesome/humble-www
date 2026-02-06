@@ -1,0 +1,59 @@
+name: Tests
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: app
+          POSTGRES_PASSWORD: app
+          POSTGRES_DB: app_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U app"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      APP_ENV: test
+      DATABASE_URL: postgresql://app:app@127.0.0.1:5432/app?serverVersion=16&charset=utf8
+      MAILER_DSN: 'null://null'
+      RECAPTCHA_SITE_KEY: test_site_key
+      RECAPTCHA_SECRET_KEY: test_secret_key
+      BUSINESS_OWNER_EMAIL: test@example.com
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: pdo_pgsql, intl, ctype, iconv
+          coverage: none
+
+      - name: Install dependencies
+        working-directory: code
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Create test database
+        working-directory: code
+        run: php bin/console doctrine:database:create --if-not-exists
+
+      - name: Run database migrations
+        working-directory: code
+        run: php bin/console doctrine:migrations:migrate --no-interaction
+
+      - name: Run tests
+        working-directory: code
+        run: php bin/phpunit

@@ -13,16 +13,18 @@ class ContactSuccessTest extends WebTestCase
 
         $this->assertResponseIsSuccessful();
         $this->assertResponseStatusCodeSame(200);
-        $this->assertSelectorTextContains('h1', "We're grateful for your message!");
+        $this->assertSelectorTextContains('h1', 'The scroll has arrived!');
     }
 
     public function testSuccessPageHasReturnLink(): void
     {
         $client = static::createClient();
-        $client->request('GET', '/contact/success');
+        $crawler = $client->request('GET', '/contact/success');
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorExists('a[href="/contact"]');
+        // Confirmation page has "Return Home" and "Explore Services" links
+        $this->assertSelectorExists('a.btn-primary');
+        $this->assertSelectorExists('a.btn-secondary');
     }
 
     public function testSuccessPageHasBrandedContent(): void
@@ -31,7 +33,6 @@ class ContactSuccessTest extends WebTestCase
         $client->request('GET', '/contact/success');
 
         $this->assertResponseIsSuccessful();
-        // Should contain branded messaging consistent with email themes
-        $this->assertSelectorTextContains('.success-content', 'grateful');
+        $this->assertSelectorTextContains('.confirmation-message', 'Humble Wizards');
     }
 }

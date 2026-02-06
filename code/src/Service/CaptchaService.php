@@ -17,6 +17,7 @@ class CaptchaService
         private string $recaptchaSecretKey,
         private LoggerInterface $logger,
         private RequestStack $requestStack,
+        private bool $skipValidation = false,
         private ?Recaptcha3Validator $recaptchaValidator = null
     ) {
         $this->httpClient = HttpClient::create();
@@ -24,6 +25,10 @@ class CaptchaService
 
     public function verifyRecaptcha(string $token, string $clientIp): bool
     {
+        if ($this->skipValidation) {
+            return true;
+        }
+
         if (empty($this->recaptchaSecretKey) || $this->recaptchaSecretKey === 'your_secret_key_here') {
             $this->logger->warning('reCAPTCHA secret key not configured, falling back to math challenge');
             return false;
@@ -131,6 +136,10 @@ class CaptchaService
 
     public function verifyMathChallenge(string $challengeId, $userAnswer): bool
     {
+        if ($this->skipValidation) {
+            return true;
+        }
+
         $session = $this->requestStack->getCurrentRequest()?->getSession();
         if (!$session) {
             $this->logger->warning('No session available for math challenge verification');
@@ -174,6 +183,11 @@ class CaptchaService
                 unset($mathChallenges[$id]);
             }
         }
+    }
+
+    public function isValidationRequired(): bool
+    {
+        return !$this->skipValidation;
     }
 
     public function isRecaptchaConfigured(): bool

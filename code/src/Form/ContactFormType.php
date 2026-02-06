@@ -26,17 +26,17 @@ class ContactFormType extends AbstractType
                     'class' => 'form-control',
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'Please enter your name']),
-                    new Assert\Length([
-                        'min' => 1,
-                        'max' => 100,
-                        'minMessage' => 'Your name must be at least {{ limit }} character',
-                        'maxMessage' => 'Your name cannot be longer than {{ limit }} characters'
-                    ]),
-                    new Assert\Regex([
-                        'pattern' => '/^[a-zA-Z0-9\s.,\'-]+$/',
-                        'message' => 'Your name contains invalid characters'
-                    ])
+                    new Assert\NotBlank(message: 'Please enter your name'),
+                    new Assert\Length(
+                        min: 1,
+                        max: 100,
+                        minMessage: 'Your name must be at least {{ limit }} character',
+                        maxMessage: 'Your name cannot be longer than {{ limit }} characters'
+                    ),
+                    new Assert\Regex(
+                        pattern: '/^[a-zA-Z0-9\s.,\'-]+$/',
+                        message: 'Your name contains invalid characters'
+                    )
                 ]
             ])
             ->add('email', EmailType::class, [
@@ -46,12 +46,12 @@ class ContactFormType extends AbstractType
                     'class' => 'form-control',
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'Please enter your email address']),
-                    new Assert\Email(['message' => 'Please enter a valid email address']),
-                    new Assert\Regex([
-                        'pattern' => '/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
-                        'message' => 'Please enter a valid email address with ASCII characters only'
-                    ])
+                    new Assert\NotBlank(message: 'Please enter your email address'),
+                    new Assert\Email(message: 'Please enter a valid email address'),
+                    new Assert\Regex(
+                        pattern: '/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
+                        message: 'Please enter a valid email address with ASCII characters only'
+                    )
                 ]
             ])
             ->add('message', TextareaType::class, [
@@ -62,17 +62,17 @@ class ContactFormType extends AbstractType
                     'class' => 'form-control',
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'Please enter your message']),
-                    new Assert\Length([
-                        'min' => 10,
-                        'max' => 500,
-                        'minMessage' => 'Your message must be at least {{ limit }} characters',
-                        'maxMessage' => 'Your message cannot be longer than {{ limit }} characters'
-                    ]),
-                    new Assert\Regex([
-                        'pattern' => '/^[a-zA-Z0-9\s.,\'\-\!\?\:\;\(\)]+$/',
-                        'message' => 'Your message contains invalid characters'
-                    ])
+                    new Assert\NotBlank(message: 'Please enter your message'),
+                    new Assert\Length(
+                        min: 10,
+                        max: 500,
+                        minMessage: 'Your message must be at least {{ limit }} characters',
+                        maxMessage: 'Your message cannot be longer than {{ limit }} characters'
+                    ),
+                    new Assert\Regex(
+                        pattern: '/^[a-zA-Z0-9\s.,\'\-\!\?\:\;\(\)]+$/',
+                        message: 'Your message contains invalid characters'
+                    )
                 ]
             ])
             ->add('serviceType', ChoiceType::class, [
@@ -97,10 +97,10 @@ class ContactFormType extends AbstractType
                     'class' => 'form-control',
                 ],
                 'constraints' => [
-                    new Assert\Regex([
-                        'pattern' => '/^[a-zA-Z0-9\s+\-\(\)\.]+$/',
-                        'message' => 'Please enter a valid phone number'
-                    ])
+                    new Assert\Regex(
+                        pattern: '/^[a-zA-Z0-9\s+\-\(\)\.]+$/',
+                        message: 'Please enter a valid phone number'
+                    )
                 ]
             ])
             ->add('company', TextType::class, [
@@ -112,14 +112,14 @@ class ContactFormType extends AbstractType
                     'style' => 'display: none;'
                 ],
                 'constraints' => [
-                    new Assert\Length([
-                        'max' => 100,
-                        'maxMessage' => 'Company name cannot be longer than {{ limit }} characters'
-                    ]),
-                    new Assert\Regex([
-                        'pattern' => '/^[a-zA-Z0-9\s.,\'\-&]+$/',
-                        'message' => 'Company name contains invalid characters'
-                    ])
+                    new Assert\Length(
+                        max: 100,
+                        maxMessage: 'Company name cannot be longer than {{ limit }} characters'
+                    ),
+                    new Assert\Regex(
+                        pattern: '/^[a-zA-Z0-9\s.,\'\-&]+$/',
+                        message: 'Company name contains invalid characters'
+                    )
                 ]
             ])
             ->add('jobRole', TextType::class, [
@@ -131,14 +131,14 @@ class ContactFormType extends AbstractType
                     'style' => 'display: none;'
                 ],
                 'constraints' => [
-                    new Assert\Length([
-                        'max' => 100,
-                        'maxMessage' => 'Job role cannot be longer than {{ limit }} characters'
-                    ]),
-                    new Assert\Regex([
-                        'pattern' => '/^[a-zA-Z0-9\s.,\'\-\/]+$/',
-                        'message' => 'Job role contains invalid characters'
-                    ])
+                    new Assert\Length(
+                        max: 100,
+                        maxMessage: 'Job role cannot be longer than {{ limit }} characters'
+                    ),
+                    new Assert\Regex(
+                        pattern: '/^[a-zA-Z0-9\s.,\'\-\/]+$/',
+                        message: 'Job role contains invalid characters'
+                    )
                 ]
             ])
             ->add('projectDescription', TextareaType::class, [
@@ -151,16 +151,16 @@ class ContactFormType extends AbstractType
                     'style' => 'display: none;'
                 ],
                 'constraints' => [
-                    new Assert\Length([
-                        'min' => 10,
-                        'max' => 1000,
-                        'minMessage' => 'Project description must be at least {{ limit }} characters when provided',
-                        'maxMessage' => 'Project description cannot be longer than {{ limit }} characters'
-                    ]),
-                    new Assert\Regex([
-                        'pattern' => '/^[a-zA-Z0-9\s.,\'\-\!\?\:\;\(\)\/]+$/',
-                        'message' => 'Project description contains invalid characters'
-                    ])
+                    new Assert\Length(
+                        min: 10,
+                        max: 1000,
+                        minMessage: 'Project description must be at least {{ limit }} characters when provided',
+                        maxMessage: 'Project description cannot be longer than {{ limit }} characters'
+                    ),
+                    new Assert\Regex(
+                        pattern: '/^[a-zA-Z0-9\s.,\'\-\!\?\:\;\(\)\/]+$/',
+                        message: 'Project description contains invalid characters'
+                    )
                 ]
             ])
             ->add('professionalStatus', TextareaType::class, [
@@ -173,16 +173,16 @@ class ContactFormType extends AbstractType
                     'style' => 'display: none;'
                 ],
                 'constraints' => [
-                    new Assert\Length([
-                        'min' => 10,
-                        'max' => 500,
-                        'minMessage' => 'Professional status must be at least {{ limit }} characters when provided',
-                        'maxMessage' => 'Professional status cannot be longer than {{ limit }} characters'
-                    ]),
-                    new Assert\Regex([
-                        'pattern' => '/^[a-zA-Z0-9\s.,\'\-\!\?\:\;\(\)\/]+$/',
-                        'message' => 'Professional background contains invalid characters'
-                    ])
+                    new Assert\Length(
+                        min: 10,
+                        max: 500,
+                        minMessage: 'Professional status must be at least {{ limit }} characters when provided',
+                        maxMessage: 'Professional status cannot be longer than {{ limit }} characters'
+                    ),
+                    new Assert\Regex(
+                        pattern: '/^[a-zA-Z0-9\s.,\'\-\!\?\:\;\(\)\/]+$/',
+                        message: 'Professional background contains invalid characters'
+                    )
                 ]
             ])
             ->add('coachingGoals', TextareaType::class, [
@@ -195,16 +195,16 @@ class ContactFormType extends AbstractType
                     'style' => 'display: none;'
                 ],
                 'constraints' => [
-                    new Assert\Length([
-                        'min' => 10,
-                        'max' => 500,
-                        'minMessage' => 'Coaching goals must be at least {{ limit }} characters when provided',
-                        'maxMessage' => 'Coaching goals cannot be longer than {{ limit }} characters'
-                    ]),
-                    new Assert\Regex([
-                        'pattern' => '/^[a-zA-Z0-9\s.,\'\-\!\?\:\;\(\)\/]+$/',
-                        'message' => 'Coaching goals contains invalid characters'
-                    ])
+                    new Assert\Length(
+                        min: 10,
+                        max: 500,
+                        minMessage: 'Coaching goals must be at least {{ limit }} characters when provided',
+                        maxMessage: 'Coaching goals cannot be longer than {{ limit }} characters'
+                    ),
+                    new Assert\Regex(
+                        pattern: '/^[a-zA-Z0-9\s.,\'\-\!\?\:\;\(\)\/]+$/',
+                        message: 'Coaching goals contains invalid characters'
+                    )
                 ]
             ])
             ->add('captchaToken', HiddenType::class, [
