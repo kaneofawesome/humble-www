@@ -43,3 +43,6 @@ when@test:
             arguments:
                 $recaptchaSecretKey: '%app.recaptcha_secret_key%'
                 $skipValidation: true
+        App\Service\RateLimitService:
+            arguments:
+                $skipRateLimiting: true
