@@ -33,3 +33,13 @@ services:
     App\EventListener\ThemeListener:
         tags:
             - { name: kernel.event_listener, event: kernel.request, priority: 100 }
+
+when@test:
+    services:
+        _defaults:
+            autowire: true
+            autoconfigure: true
+        App\Service\CaptchaService:
+            arguments:
+                $recaptchaSecretKey: '%app.recaptcha_secret_key%'
+                $skipValidation: true

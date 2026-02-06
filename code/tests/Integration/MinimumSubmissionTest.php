@@ -6,38 +6,25 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class MinimumSubmissionTest extends WebTestCase
 {
-    /**
-     * Test 2: Minimum Valid Submission
-     * Goal: Test successful submission with only required fields
-     */
     public function testMinimumValidSubmission(): void
     {
         $client = static::createClient();
-
-        // Get the form first
         $crawler = $client->request('GET', '/contact');
 
         if ($client->getResponse()->isSuccessful()) {
-            $form = $crawler->selectButton('submit')->form([
+            $form = $crawler->selectButton('contact_form_submit')->form([
                 'contact_form[name]' => 'Test User',
                 'contact_form[email]' => 'test@example.com',
-                'contact_form[message]' => 'This is a test message with minimum length'
+                'contact_form[message]' => 'This is a test message with minimum length',
             ]);
-
-            // Handle captcha - assume math challenge for testing
-            $mathChallenge = $crawler->filter('.math-challenge');
-            if ($mathChallenge->count() > 0) {
-                $form['contact_form[mathAnswer]'] = '7'; // Assuming 3+4=7 example
-            }
 
             $client->submit($form);
 
-            // Expected results:
-            // - Success page with "We're grateful for your message!"
-            $this->assertResponseRedirects('/contact/success');
+            $this->assertResponseRedirects();
+            $this->assertStringContainsString('/contact/success', $client->getResponse()->headers->get('Location'));
 
             $client->followRedirect();
-            $this->assertSelectorTextContains('body', "We're grateful for your message!");
+            $this->assertSelectorTextContains('h1', 'The scroll has arrived!');
             $this->assertResponseIsSuccessful();
         } else {
             $this->markTestSkipped('Contact page not accessible yet');
@@ -46,8 +33,6 @@ class MinimumSubmissionTest extends WebTestCase
 
     public function testEmailDeliveryValidation(): void
     {
-        // This test would check MailHog inbox at http://localhost:8025
-        // For now, we'll mark it as integration point to be tested manually
         $this->markTestSkipped('Email delivery to be tested with MailHog integration');
     }
 
@@ -57,23 +42,17 @@ class MinimumSubmissionTest extends WebTestCase
         $crawler = $client->request('GET', '/contact');
 
         if ($client->getResponse()->isSuccessful()) {
-            $form = $crawler->selectButton('submit')->form([
+            $form = $crawler->selectButton('contact_form_submit')->form([
                 'contact_form[name]' => 'Test User',
                 'contact_form[email]' => 'test@example.com',
                 'contact_form[message]' => 'This is a test message with minimum length',
-                'contact_form[phone]' => '+1 (555) 123-4567'
+                'contact_form[phone]' => '+1 (555) 123-4567',
             ]);
-
-            // Handle captcha
-            $mathChallenge = $crawler->filter('.math-challenge');
-            if ($mathChallenge->count() > 0) {
-                $form['contact_form[mathAnswer]'] = '7';
-            }
 
             $client->submit($form);
 
-            // Should succeed even with optional fields
-            $this->assertResponseRedirects('/contact/success');
+            $this->assertResponseRedirects();
+            $this->assertStringContainsString('/contact/success', $client->getResponse()->headers->get('Location'));
         } else {
             $this->markTestSkipped('Contact page not accessible yet');
         }
@@ -85,18 +64,18 @@ class MinimumSubmissionTest extends WebTestCase
         $crawler = $client->request('GET', '/contact');
 
         if ($client->getResponse()->isSuccessful()) {
-            $form = $crawler->selectButton('submit')->form([
+            $form = $crawler->selectButton('contact_form_submit')->form([
                 'contact_form[name]' => 'Test User',
                 'contact_form[email]' => 'test@example.com',
                 'contact_form[message]' => 'This is a test message with minimum length',
-                'contact_form[phone]' => '', // Empty optional field
-                'contact_form[serviceType]' => '' // No service selected
+                'contact_form[phone]' => '',
+                'contact_form[serviceType]' => '',
             ]);
 
             $client->submit($form);
 
-            // Should succeed with empty optional fields
-            $this->assertResponseRedirects('/contact/success');
+            $this->assertResponseRedirects();
+            $this->assertStringContainsString('/contact/success', $client->getResponse()->headers->get('Location'));
         } else {
             $this->markTestSkipped('Contact page not accessible yet');
         }

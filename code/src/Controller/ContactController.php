@@ -71,15 +71,18 @@ class ContactController extends AbstractController
             }
         }
 
-        $captchaToken = $form->get('captchaToken')->getData();
-        $mathAnswer = $form->get('mathChallengeAnswer')->getData();
-        $mathChallengeId = $request->request->get('math_challenge_id');
+        $captchaValid = !$this->captchaService->isValidationRequired();
 
-        $captchaValid = false;
-        if ($captchaToken) {
-            $captchaValid = $this->captchaService->verifyRecaptcha($captchaToken, $clientIp);
-        } elseif ($mathAnswer && $mathChallengeId) {
-            $captchaValid = $this->captchaService->verifyMathChallenge($mathChallengeId, $mathAnswer);
+        if (!$captchaValid) {
+            $captchaToken = $form->get('captchaToken')->getData();
+            $mathAnswer = $form->get('mathChallengeAnswer')->getData();
+            $mathChallengeId = $request->request->get('math_challenge_id');
+
+            if ($captchaToken) {
+                $captchaValid = $this->captchaService->verifyRecaptcha($captchaToken, $clientIp);
+            } elseif ($mathAnswer && $mathChallengeId) {
+                $captchaValid = $this->captchaService->verifyMathChallenge($mathChallengeId, $mathAnswer);
+            }
         }
 
         if (!$captchaValid) {
