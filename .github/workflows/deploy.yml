@@ -176,6 +176,7 @@ jobs:
           "
           ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
             cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code && \
+            rm -f .env.local.php && \
             (command -v composer >/dev/null 2>&1 && composer install --no-dev --optimize-autoloader) || \
             php composer.phar install --no-dev --optimize-autoloader && \
             composer dump-env prod
