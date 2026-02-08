@@ -161,14 +161,15 @@ jobs:
             ln -sfn ${{ vars.DEPLOY_PATH }}/shared/log ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code/var/log && \
             if [ -f ${{ vars.DEPLOY_PATH }}/.env.local ]; then \
               cp ${{ vars.DEPLOY_PATH }}/.env.local ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code/.env.local; \
-            fi && \
-            echo 'APP_ENV=prod' >> ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code/.env.local && \
-            echo 'APP_DEBUG=0' >> ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code/.env.local && \
-            echo 'DATABASE_URL=${{ secrets.DATABASE_URL }}' >> ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code/.env.local && \
-            echo 'MAILER_DSN=${{ secrets.MAILER_DSN_PROD }}' >> ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code/.env.local
+            fi
           "
 
       - name: Compose on server
+        env:
+          APP_ENV: prod
+          APP_DEBUG: 0
+          MAILER_DSN: ${{ secrets.MAILER_DSN_PROD }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
           ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
             cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }} && \
@@ -176,9 +177,8 @@ jobs:
           "
           ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
             cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code && \
-            rm -f .env.local.php && \
-            (command -v composer >/dev/null 2>&1 && composer install --no-dev --optimize-autoloader) || \
-            php composer.phar install --no-dev --optimize-autoloader && \
+            (command -v composer >/dev/null 2>&1 &&  APP_ENV=prod DATABASE_URL=${{ secrets.DATABASE_URL }} MAILER_DSN=${{ secrets.MAILER_DSN_PROD }} APP_DEBUG=0 composer install --no-dev --optimize-autoloader) || \
+            APP_ENV=prod DATABASE_URL=${{ secrets.DATABASE_URL }} MAILER_DSN=${{ secrets.MAILER_DSN_PROD }} APP_DEBUG=0 php composer.phar install --no-dev --optimize-autoloader && \
             composer dump-env prod
           "
 
@@ -197,9 +197,9 @@ jobs:
         run: |
           ssh ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST }} "
             cd ${{ vars.RELEASES_DIR }}/${{ env.RELEASE }}/code && \
-            php bin/console cache:clear && \
-            php bin/console cache:warmup && \
-            php bin/console asset-map:compile
+            APP_ENV=prod DATABASE_URL=${{ secrets.DATABASE_URL }} MAILER_DSN=${{ secrets.MAILER_DSN_PROD }} APP_DEBUG=0 php bin/console cache:clear && \
+            APP_ENV=prod DATABASE_URL=${{ secrets.DATABASE_URL }} MAILER_DSN=${{ secrets.MAILER_DSN_PROD }} APP_DEBUG=0 php bin/console cache:warmup && \
+            APP_ENV=prod DATABASE_URL=${{ secrets.DATABASE_URL }} MAILER_DSN=${{ secrets.MAILER_DSN_PROD }} APP_DEBUG=0 php bin/console asset-map:compile
           "
 
       - name: Give www-data the cache
