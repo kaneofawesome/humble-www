@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Sign In - Humble{% endblock %}
+
+{% block body %}
+<section class="auth-section">
+    <div class="auth-container">
+        <div class="auth-card">
+            <h1 class="auth-title">Sign In</h1>
+            <p class="auth-subtitle">Welcome back to Humble Wizards</p>
+
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success">{{ message }}</div>
+            {% endfor %}
+            {% for message in app.flashes('error') %}
+                <div class="alert alert-danger">{{ message }}</div>
+            {% endfor %}
+
+            {% if error %}
+                <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+            {% endif %}
+
+            <form method="post" class="auth-form">
+                <div class="form-group">
+                    <label for="inputEmail" class="form-label">Email</label>
+                    <input type="email" id="inputEmail" name="_username" value="{{ last_username }}" required autofocus class="form-input" placeholder="you@example.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="inputPassword" class="form-label">Password</label>
+                    <input type="password" id="inputPassword" name="_password" required class="form-input" placeholder="Your password">
+                </div>
+
+                <div class="form-group form-check">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="_remember_me" class="form-checkbox">
+                        <span>Remember me</span>
+                    </label>
+                </div>
+
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+            </form>
+
+            <div class="auth-footer">
+                <p><a href="{{ path('app_forgot_password_request') }}">Forgot your password?</a></p>
+                <p>Don't have an account? <a href="{{ path('app_register') }}">Create one</a></p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

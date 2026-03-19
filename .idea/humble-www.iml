@@ -132,6 +132,10 @@
       <excludeFolder url="file://$MODULE_DIR$/code/vendor/twig/twig" />
       <excludeFolder url="file://$MODULE_DIR$/code/vendor/webmozart/assert" />
       <excludeFolder url="file://$MODULE_DIR$/code/vendor/karser/karser-recaptcha3-bundle" />
+      <excludeFolder url="file://$MODULE_DIR$/code/vendor/symfony/polyfill-uuid" />
+      <excludeFolder url="file://$MODULE_DIR$/code/vendor/symfony/rate-limiter" />
+      <excludeFolder url="file://$MODULE_DIR$/code/vendor/symfony/uid" />
+      <excludeFolder url="file://$MODULE_DIR$/code/vendor/symfonycasts/reset-password-bundle" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

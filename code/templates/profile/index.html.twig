@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profile - Humble{% endblock %}
+
+{% block body %}
+<section class="auth-section">
+    <div class="auth-container">
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% endfor %}
+
+        <div class="profile-header">
+            <img src="{{ gravatar(user.email, 80) }}"
+                 alt="{{ user.displayName ?? user.email }}"
+                 class="profile-avatar">
+            <div class="profile-info">
+                <h1 class="profile-name">{{ user.displayName ?? user.email }}</h1>
+                <p class="profile-email">{{ user.email }}</p>
+                <p class="profile-meta">Member since {{ user.createdAt|date('F Y') }}</p>
+            </div>
+        </div>
+
+        <div class="auth-card">
+            <h2 class="auth-title">Edit Profile</h2>
+
+            {{ form_start(profileForm, {'attr': {'class': 'auth-form', 'novalidate': 'novalidate'}}) }}
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" value="{{ user.email }}" disabled class="form-input form-input-disabled">
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(profileForm.displayName, 'Display Name', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(profileForm.displayName, {'attr': {'class': 'form-input'}}) }}
+                    {{ form_errors(profileForm.displayName) }}
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <a href="{{ path('app_change_password') }}" class="btn btn-outline">Change Password</a>
+                </div>
+            {{ form_end(profileForm) }}
+        </div>
+
+        <div class="profile-logout">
+            <form action="{{ path('app_logout') }}" method="post">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
+                <button type="submit" class="btn btn-outline btn-logout">Log Out</button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

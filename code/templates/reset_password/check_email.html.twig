@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Check Your Email - Humble{% endblock %}
+
+{% block body %}
+<section class="auth-section">
+    <div class="auth-container">
+        <div class="auth-card">
+            <h1 class="auth-title">Check Your Email</h1>
+            <p class="auth-subtitle">A reset link has been sent if an account exists with that email</p>
+
+            <div class="auth-form">
+                <p style="text-align: center; color: var(--text-secondary); line-height: 1.7;">
+                    If an account matching your email exists, then an email was just sent that contains a link you can use to reset your password.
+                </p>
+                <p style="text-align: center; color: var(--text-secondary); line-height: 1.7;">
+                    This link will expire in {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
+                </p>
+                <p style="text-align: center; color: var(--text-secondary); font-size: 0.9rem;">
+                    If you don't receive an email, please check your spam folder or try again.
+                </p>
+            </div>
+
+            <div class="auth-footer">
+                <p><a href="{{ path('app_login') }}">Back to Sign In</a></p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

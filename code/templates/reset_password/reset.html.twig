@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Reset Password - Humble{% endblock %}
+
+{% block body %}
+<section class="auth-section">
+    <div class="auth-container">
+        <div class="auth-card">
+            <h1 class="auth-title">Reset Password</h1>
+            <p class="auth-subtitle">Choose a new password for your account</p>
+
+            {% for flash_error in app.flashes('reset_password_error') %}
+                <div class="alert alert-danger">{{ flash_error }}</div>
+            {% endfor %}
+
+            {{ form_start(resetForm, {'attr': {'class': 'auth-form', 'novalidate': 'novalidate'}}) }}
+                <div class="form-group">
+                    {{ form_label(resetForm.plainPassword.first, 'New Password', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(resetForm.plainPassword.first, {'attr': {'class': 'form-input', 'placeholder': 'At least 8 characters'}}) }}
+                    {{ form_errors(resetForm.plainPassword.first) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(resetForm.plainPassword.second, 'Confirm New Password', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(resetForm.plainPassword.second, {'attr': {'class': 'form-input'}}) }}
+                    {{ form_errors(resetForm.plainPassword.second) }}
+                </div>
+
+                {{ form_errors(resetForm) }}
+
+                <button type="submit" class="btn btn-primary btn-block">Reset Password</button>
+            {{ form_end(resetForm) }}
+        </div>
+    </div>
+</section>
+{% endblock %}
