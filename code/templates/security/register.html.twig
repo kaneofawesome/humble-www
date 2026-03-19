@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Create Account - Humble{% endblock %}
+
+{% block body %}
+<section class="auth-section">
+    <div class="auth-container">
+        <div class="auth-card">
+            <h1 class="auth-title">Create Account</h1>
+            <p class="auth-subtitle">Join Humble Wizards</p>
+
+            {% for message in app.flashes('error') %}
+                <div class="alert alert-danger">{{ message }}</div>
+            {% endfor %}
+
+            {{ form_start(registrationForm, {'attr': {'class': 'auth-form', 'novalidate': 'novalidate'}}) }}
+                <div class="form-group">
+                    {{ form_label(registrationForm.email, 'Email', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(registrationForm.email, {'attr': {'class': 'form-input', 'placeholder': 'you@example.com'}}) }}
+                    {{ form_errors(registrationForm.email) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(registrationForm.displayName, 'Display Name', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(registrationForm.displayName, {'attr': {'class': 'form-input', 'placeholder': 'Optional'}}) }}
+                    {{ form_errors(registrationForm.displayName) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(registrationForm.plainPassword.first, 'Password', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(registrationForm.plainPassword.first, {'attr': {'class': 'form-input', 'placeholder': 'At least 8 characters'}}) }}
+                    {{ form_errors(registrationForm.plainPassword.first) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(registrationForm.plainPassword.second, 'Confirm Password', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(registrationForm.plainPassword.second, {'attr': {'class': 'form-input', 'placeholder': 'Repeat your password'}}) }}
+                    {{ form_errors(registrationForm.plainPassword.second) }}
+                </div>
+
+                {{ form_errors(registrationForm) }}
+
+                <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+            {{ form_end(registrationForm) }}
+
+            <div class="auth-footer">
+                <p>Already have an account? <a href="{{ path('app_login') }}">Sign in</a></p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

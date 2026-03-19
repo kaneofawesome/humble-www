@@ -101,6 +101,29 @@
                                 </svg>
                             </button>
                         </li>
+                        <li class="nav-item">
+                            {% if app.user %}
+                                <div class="nav-dropdown">
+                                    <a href="{{ path('app_profile') }}" class="nav-link user-nav-link{{ app.request.attributes.get('_route') == 'app_profile' ? ' active' : '' }}">
+                                        <img src="{{ gravatar(app.user.email, 32) }}"
+                                             alt="{{ app.user.displayName ?? app.user.email }}"
+                                             class="nav-avatar">
+                                        <span>{{ app.user.displayName ?? app.user.email }}</span>
+                                    </a>
+                                    <div class="nav-dropdown-menu">
+                                        <a href="{{ path('app_profile') }}" class="nav-dropdown-item">Profile</a>
+                                        <a href="{{ path('app_change_password') }}" class="nav-dropdown-item">Change Password</a>
+                                        <div class="nav-dropdown-divider"></div>
+                                        <form action="{{ path('app_logout') }}" method="post">
+                                            <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
+                                            <button type="submit" class="nav-dropdown-item nav-dropdown-logout">Log Out</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <a href="{{ path('app_login') }}" class="btn btn-primary btn-sm">Sign In</a>
+                            {% endif %}
+                        </li>
                     </ul>
                 </div>
 
