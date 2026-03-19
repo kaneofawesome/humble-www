@@ -140,6 +140,10 @@
       <path value="$PROJECT_DIR$/code/vendor/symfony/cache" />
       <path value="$PROJECT_DIR$/code/vendor/symfony/framework-bundle" />
       <path value="$PROJECT_DIR$/code/vendor/symfony/config" />
+      <path value="$PROJECT_DIR$/code/vendor/symfony/rate-limiter" />
+      <path value="$PROJECT_DIR$/code/vendor/symfony/uid" />
+      <path value="$PROJECT_DIR$/code/vendor/symfony/polyfill-uuid" />
+      <path value="$PROJECT_DIR$/code/vendor/symfonycasts/reset-password-bundle" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.2">
