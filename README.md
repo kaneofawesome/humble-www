@@ -1,6 +1,5 @@
 # humble-www
 https://www.humblewizards.com  
-email through zoho, DSN messenger uses Neon (user kane@humblewizards.com)
 
 ## Licensing
 
@@ -13,3 +12,9 @@ email through zoho, DSN messenger uses Neon (user kane@humblewizards.com)
 - `/content`, `code/translations`, `code/content`, `code/public/images`, `code/public/media`, `code/assets/images` → **Content (All Rights Reserved)**
 - `/vendor` → third-party licenses apply
 
+### Mail
+- sent through DSN messenger with redis on https://upstash.com/
+- hosted on zoho
+
+### Misc
+- **Database** is hosted on neon https://www.neon.tech/
